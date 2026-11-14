@@ -1,0 +1,28 @@
+# Installed dependencies and generated outputs
+node_modules/
+dist/
+.next/
+coverage/
+.vite/
+.cache/
+playwright-report/
+test-results/
+
+# Private runtime configuration, mail, logs, uploads and database backups
+.env
+.env.*
+!.env.example
+.local/
+uploads/
+*.log
+*.dump
+*.backup
+*.bak
+*.pem
+*.key
+
+# Local editor / operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
