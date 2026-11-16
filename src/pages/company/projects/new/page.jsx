@@ -78,7 +78,7 @@ function WizardContent() {
               {[["solo", "Solo bake-off. The top 3 work in parallel and the company eliminates after a phase."], ["team", "One team. The top 3 work together and the company keeps the team or the strongest person."]].map(([mode, copy]) => (<button key={mode} type="button" onClick={() => setDeliveryMode(mode)} className={`w-full rounded-[8px] border p-4 text-left mb-3 ${deliveryMode === mode ? "border-primary bg-blue-50" : "border-border"}`}>
                   <p className="text-label text-foreground">{mode === "solo" ? "Solo" : "Team"}</p>
                   <p className="text-caption mt-1">{copy}</p>
-                </button>)}
+                </button>))}
               {["Training Project", "Paid Project", "Hiring Challenge"].map((type) => (<button key={type} type="button" onClick={() => setProjectType(type)} className={`w-full rounded-[8px] border p-4 text-left transition-colors ${projectType === type ? "border-primary bg-blue-50" : "border-border hover:bg-surface"}`}>
                   <p className="text-label text-foreground">{type}</p>
                   <p className="text-caption mt-1">
