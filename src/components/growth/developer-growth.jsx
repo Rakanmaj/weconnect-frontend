@@ -164,7 +164,7 @@ function PlacementAssessmentLanding() {
 }
 export function AssessmentPage(){const search=useSearchParams();const id=search.get('attempt');return id?<AttemptWorkspace key={id} id={id}/>:<PlacementAssessmentLanding/>;}
 export function AssessmentResultPage(){const search=useSearchParams();const id=search.get('attempt');return id?<AttemptWorkspace key={id} id={id}/>:<GrowthProgressPage/>;}
-export function AssessmentFollowupPage(){return <div className="max-w-2xl mx-auto"><PageHeader title="Assessment follow-up"/><Card><p className="mb-5">AI follow-ups are not enabled for this delivery. Multiple-choice answers are scored automatically; an administrator reviews coding and written answers.</p><Button asChild><Link href="/developer/level">View assessment history</Link></Button></Card></div>;}
+export function AssessmentFollowupPage(){return <div className="max-w-2xl mx-auto"><PageHeader title="Assessment follow-up"/><Card><p className="mb-5">Assessment scoring is automatic. Suspected cheating requires administrator review. Adaptive AI follow-ups are not available yet.</p><Button asChild><Link href="/developer/level">View assessment history</Link></Button></Card></div>;}
 function nextLevelCopy(skill) {
   if (skill.completed >= skill.master_threshold) return 'Master. This is the highest level a company sees for this skill.';
   if (skill.completed >= skill.level2_threshold) {
@@ -392,18 +392,19 @@ export function AttemptWorkspace({id}){
   const resource=useResource(`/growth/attempts/${id}`);
   const saveRef=useRef(async()=>{});
   const attempt=resource.data?.attempt;
+  async function reloadAttempt(){try{await resource.reload();resource.setError('');}catch(error){resource.setError(error.message);}}
   useEffect(()=>{
     if(!attempt||attempt.status!=='active'||attempt.kind==='challenge')return;
-    const timer=setInterval(()=>resource.reload().catch(()=>{}),10000);
+    const timer=setInterval(()=>{void reloadAttempt();},10000);
     return()=>clearInterval(timer);
   },[id,attempt?.status,attempt?.kind]);
-  if(!resource.data)return <LoadingProfile error={resource.error}/>;
-  const editor=<AttemptEditor key={`${id}-${resource.data.attempt.status}`} attempt={resource.data.attempt} refresh={resource.reload} saveRef={saveRef}/>;
+  if(!resource.data)return <div><LoadingProfile error={resource.error}/>{resource.error&&<Button variant="secondary" onClick={reloadAttempt}>Retry loading saved attempt</Button>}</div>;
+  const editor=<AttemptEditor key={`${id}-${resource.data.attempt.status}`} attempt={resource.data.attempt} refresh={resource.reload} saveRef={saveRef} serverError={resource.error}/>;
   if(resource.data.attempt.kind==='challenge')return <div className="mx-auto max-w-5xl" data-count-up-ignore>{editor}</div>;
   if(resource.data.attempt.kind==='project')return <div data-count-up-ignore>{editor}</div>;
   return <div data-count-up-ignore><QuestionPrivacy key={id} attempt={resource.data.attempt} beforeReport={()=>saveRef.current()} onStopped={resource.reload}>{editor}</QuestionPrivacy></div>;
 }
-function AttemptEditor({attempt,refresh,saveRef}){
+function AttemptEditor({attempt,refresh,saveRef,serverError}){
   const challenge=attempt.kind==='challenge';
   const [answers,setAnswers]=useState(()=>Object.fromEntries(attempt.questions.map(q=>[q.id,{answer:attempt.answers.find(a=>a.question_id===q.id)?.answer||'',flagged:attempt.answers.find(a=>a.question_id===q.id)?.flagged||false}])));
   const [project,setProject]=useState({repositoryUrl:attempt.project?.repository_url||'',demoUrl:attempt.project?.demo_url||'',summary:attempt.project?.summary||''});
@@ -440,7 +441,7 @@ function AttemptEditor({attempt,refresh,saveRef}){
   const q=attempt.questions[index];const answered=Object.values(answers).filter(a=>a.answer.trim()).length;
   const challengeMeta=challenge?`${answered}/${attempt.questions.length} answered · Pass ${attempt.pass_score}%`:null;
   return <div className="min-w-0"><PageHeader title={attempt.title} description={challenge?challengeMeta:`Version ${attempt.version} · ${labels[attempt.status]}`} breadcrumb={<Link href={back} className="inline-flex items-center gap-2 text-primary"><ArrowLeft className="h-4 w-4"/> Back to {challenge?'challenges':attempt.kind==='project'?'internal projects':'assessments'}</Link>} action={remaining!==null&&active&&!challenge?<ExamTimer remaining={remaining}/>:null}/>
-    <AuthError message={error}/>{!challenge&&<Notice message={message}/>}
+    <AuthError message={error||serverError}/>{!challenge&&<Notice message={message}/>}
     {challenge&&(attempt.lessonUrl||attempt.coach?.hints?.length>0)&&<Card className="mb-6 border-border bg-surface/40"><div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div className="min-w-0 flex-1">{attempt.lessonUrl&&<a className="text-sm font-medium text-primary underline" href={attempt.lessonUrl} target="_blank" rel="noreferrer">Study on W3Schools before you answer</a>}{active&&attempt.coach?.hints?.length>0&&<ul className="mt-2 space-y-1 text-sm text-muted">{attempt.coach.hints.map(hint=><li key={hint}>{hint}</li>)}</ul>}</div>{active&&<p className="text-caption shrink-0 sm:text-right">60% unlocks the next milestone</p>}</div></Card>}
     {active&&!challenge&&remaining!==null&&remaining<=300&&<p role="alert" className="mb-5 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">{remaining<=60?'Less than one minute remains.':'Five minutes or less remain.'} Your last saved answers will be submitted automatically when time ends.</p>}
     {attempt.security_stopped_at&&!challenge&&<Card className="mb-6 border-red-200 bg-red-50"><h2 className="text-h3 text-red-800">Exam stopped for review</h2><p className="text-sm mt-3">{attempt.security_stop_reason}</p><p className="text-sm mt-2">Your saved answers are locked. An administrator must review the recorded events before a final result is published.</p></Card>}
