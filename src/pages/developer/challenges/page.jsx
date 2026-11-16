@@ -1,1 +1,1 @@
-export { SkillsPage as default } from "@/components/growth/developer-growth";
+export { ChallengesPage as default } from "@/components/growth/developer-growth";

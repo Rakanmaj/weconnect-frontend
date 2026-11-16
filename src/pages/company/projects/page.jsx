@@ -1,36 +1,13 @@
 import Link from "@/router";
 import { Plus } from "lucide-react";
 import { PageHeader } from "@/components/ui/common";
-import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
-import { StatusBadge } from "@/components/ui/status-badges";
-import { companyProjects } from "@/lib/mock-data";
-import { formatDate } from "@/lib/utils";
 import { useAuth } from '@/lib/auth';
 import { canUseCompanyPath } from '@/lib/company-access';
-const columns = [
-    {
-        key: "title",
-        header: "Project",
-        cell: (row) => (<Link href={`/company/projects/${row.id}`} className="font-medium text-foreground hover:text-primary">
-        {row.title}
-      </Link>),
-    },
-    { key: "type", header: "Type", cell: (row) => row.type },
-    { key: "role", header: "Role", cell: (row) => row.role },
-    {
-        key: "deadline",
-        header: "Deadline",
-        cell: (row) => formatDate(row.deadline),
-    },
-    {
-        key: "state",
-        header: "Status",
-        cell: (row) => <StatusBadge status={row.state}/>,
-    },
-];
+import { useResource } from "@/lib/api";
 export default function CompanyProjectsPage() {
     const { user } = useAuth();
+    const live = useResource('/company/projects');
     return (<>
       <PageHeader title="Projects" description="Manage training, paid, and hiring challenge projects." action={canUseCompanyPath(user, '/company/projects/new') && <Button asChild>
             <Link href="/company/projects/new">
@@ -38,6 +15,9 @@ export default function CompanyProjectsPage() {
               Create project
             </Link>
           </Button>}/>
-      <DataTable data={companyProjects} columns={columns} searchKeys={["title", "role", "type"]} searchPlaceholder="Search projects..."/>
+      {live.data?.items?.length ? <div className="mb-6 space-y-3">{live.data.items.map(project => <Link key={project.id} href={`/company/projects/${project.id}/matches`} className="block rounded-lg border p-4">
+        <p className="font-medium">{project.title}</p>
+        <p className="text-caption">{project.delivery_mode} · {project.project_type} · {project.status}</p>
+      </Link>)}</div> : <p className="text-body-sm text-muted">No projects yet. Create one to start matching.</p>}
     </>);
 }

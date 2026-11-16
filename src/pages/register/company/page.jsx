@@ -14,9 +14,9 @@ export default function RegisterCompanyPage() {
     const router = useRouter();
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    const [companyName, setCompanyName] = useState("TechFlow Solutions");
-    const [industry, setIndustry] = useState("Software & Technology");
-    const [companySize, setCompanySize] = useState("50-200");
+    const [companyName, setCompanyName] = useState("");
+    const [industry, setIndustry] = useState("");
+    const [companySize, setCompanySize] = useState("");
     async function handleSubmit(e) {
         e.preventDefault();
         const data = Object.fromEntries(new FormData(e.currentTarget));
@@ -41,13 +41,13 @@ export default function RegisterCompanyPage() {
               <Label htmlFor="companyName" required>
                 Company name
               </Label>
-              <Input id="companyName" name="companyName" required value={companyName} onChange={(event) => setCompanyName(event.target.value)} className="h-10 rounded-xl"/>
+              <Input id="companyName" name="companyName" required placeholder="Company name" value={companyName} onChange={(event) => setCompanyName(event.target.value)} className="h-10 rounded-xl"/>
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="website" required>
                 Website
               </Label>
-              <Input id="website" name="website" type="url" required defaultValue="https://techflow.example.com" className="h-10 rounded-xl"/>
+              <Input id="website" name="website" type="url" required placeholder="https://company.com" className="h-10 rounded-xl"/>
             </div>
           </div>
 
@@ -56,7 +56,7 @@ export default function RegisterCompanyPage() {
               <Label htmlFor="industry" required>
                 Industry
               </Label>
-              <Input id="industry" name="industry" required value={industry} onChange={(event) => setIndustry(event.target.value)} className="h-10 rounded-xl"/>
+              <Input id="industry" name="industry" required placeholder="Industry" value={industry} onChange={(event) => setIndustry(event.target.value)} className="h-10 rounded-xl"/>
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="size" required>
@@ -76,13 +76,13 @@ export default function RegisterCompanyPage() {
               <Label htmlFor="location" required>
                 Location
               </Label>
-              <Input id="location" name="location" required defaultValue="Amman, Jordan" className="h-10 rounded-xl"/>
+              <Input id="location" name="location" required placeholder="City, country" className="h-10 rounded-xl"/>
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="email" required>
                 Work email
               </Label>
-              <Input id="email" name="email" type="email" required defaultValue="sarah@techflow.example.com" className="h-10 rounded-xl"/>
+              <Input id="email" name="email" type="email" required placeholder="name@company.com" className="h-10 rounded-xl"/>
             </div>
           </div>
 
@@ -91,19 +91,19 @@ export default function RegisterCompanyPage() {
               <Label htmlFor="contactName" required>
                 Contact name
               </Label>
-              <Input id="contactName" name="contactName" required defaultValue="Sarah Al-Masri" className="h-10 rounded-xl"/>
+              <Input id="contactName" name="contactName" required placeholder="Contact name" className="h-10 rounded-xl"/>
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="contactTitle" required>
                 Job title
               </Label>
-              <Input id="contactTitle" name="contactTitle" required defaultValue="Head of Engineering" className="h-10 rounded-xl"/>
+              <Input id="contactTitle" name="contactTitle" required placeholder="Job title" className="h-10 rounded-xl"/>
             </div>
           </div>
 
           <div className="space-y-1.5">
             <Label htmlFor="about">About your company</Label>
-            <Textarea id="about" name="about" defaultValue="TechFlow builds customer-support software and is hiring verified full-stack developers for product delivery." rows={2} className="min-h-16 rounded-xl"/>
+            <Textarea id="about" name="about" placeholder="What your company does" rows={2} className="min-h-16 rounded-xl"/>
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2">
@@ -111,14 +111,14 @@ export default function RegisterCompanyPage() {
               <Label htmlFor="password" required>
                 Password
               </Label>
-              <Input id="password" name="password" type="password" required minLength={8} defaultValue="WeConnect2026!" className="h-10 rounded-xl"/>
+              <Input id="password" name="password" type="password" required minLength={8} placeholder="At least 8 characters" className="h-10 rounded-xl"/>
             </div>
 
             <div className="space-y-1.5">
               <Label htmlFor="confirmPassword" required>
                 Confirm password
               </Label>
-              <Input id="confirmPassword" name="confirmPassword" type="password" required minLength={8} defaultValue="WeConnect2026!" className="h-10 rounded-xl"/>
+              <Input id="confirmPassword" name="confirmPassword" type="password" required minLength={8} placeholder="Repeat your password" className="h-10 rounded-xl"/>
             </div>
           </div>
 

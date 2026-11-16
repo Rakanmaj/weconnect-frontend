@@ -8,8 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ProgressBar } from "@/components/ui/progress";
 import { usePlatformSettings } from "@/lib/platform-settings";
-import { formatCurrency, isPaidProjectType } from "@/lib/platform-config";
-import { CAREER_PATHS } from "@/lib/platform-config";
+import { formatCurrency, isPaidProjectType, CAREER_PATHS } from "@/lib/platform-config";
+import { api } from "@/lib/api";
 const STEPS = [
     "Project type",
     "Role & skills",
@@ -40,6 +40,8 @@ function WizardContent() {
     const [difficulty, setDifficulty] = useState("Intermediate");
     const [workload, setWorkload] = useState("20–25 hours per week");
     const [budget, setBudget] = useState(5800);
+    const [deliveryMode, setDeliveryMode] = useState("solo");
+    const [error, setError] = useState("");
     const [phase, setPhase] = useState("form");
     const { financialsFor, settings } = usePlatformSettings();
     const financials = useMemo(() => financialsFor(Number(budget) || 0), [budget, financialsFor]);
@@ -67,11 +69,16 @@ function WizardContent() {
 
       <Card className="max-w-2xl">
         <CardContent className="pt-6">
+          {error && <p className="mb-4 text-sm text-red-700">{error}</p>}
           {step === 1 && (<div className="space-y-3">
               <FormField label="Project title" required>
                 <Input value={title} onChange={(e) => setTitle(e.target.value)}/>
               </FormField>
-              <p className="text-label text-foreground mb-4">Project type</p>
+              <p className="text-label text-foreground mb-4">Who works the project</p>
+              {[["solo", "Solo bake-off. The top 3 work in parallel and the company eliminates after a phase."], ["team", "One team. The top 3 work together and the company keeps the team or the strongest person."]].map(([mode, copy]) => (<button key={mode} type="button" onClick={() => setDeliveryMode(mode)} className={`w-full rounded-[8px] border p-4 text-left mb-3 ${deliveryMode === mode ? "border-primary bg-blue-50" : "border-border"}`}>
+                  <p className="text-label text-foreground">{mode === "solo" ? "Solo" : "Team"}</p>
+                  <p className="text-caption mt-1">{copy}</p>
+                </button>))}
               {["Training Project", "Paid Project", "Hiring Challenge"].map((type) => (<button key={type} type="button" onClick={() => setProjectType(type)} className={`w-full rounded-[8px] border p-4 text-left transition-colors ${projectType === type ? "border-primary bg-blue-50" : "border-border hover:bg-surface"}`}>
                   <p className="text-label text-foreground">{type}</p>
                   <p className="text-caption mt-1">
@@ -182,9 +189,17 @@ function WizardContent() {
             {step < 10 ? (<Button onClick={() => goToStep(step + 1)}>
                 Continue
                 <ChevronRight className="h-4 w-4"/>
-              </Button>) : (<Button onClick={() => {
+              </Button>) : (<Button onClick={async () => {
+                setError("");
                 setPhase("processing");
-                setTimeout(() => setPhase("done"), 2200);
+                try {
+                  const created = await api("/company/projects", { method: "POST", body: { title, projectType, deliveryMode, careerPath: role, skills, description, functional, technologies, difficulty, budget: Number(budget) || 0 } });
+                  await api(`/company/projects/${created.project.id}/match`, { method: "POST", body: {} });
+                  router.push(`/company/projects/${created.project.id}/matches`);
+                } catch (err) {
+                  setPhase("form");
+                  setError(err.message);
+                }
             }}>
                 Submit project
               </Button>)}

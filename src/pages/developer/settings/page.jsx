@@ -4,12 +4,13 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/developer/card";
-import { ahmadAli } from "@/lib/mock-data";
+import { useAuth } from "@/lib/auth";
 const TABS = ["account", "security", "notifications", "privacy", "availability"];
 export default function SettingsPage() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const tab = searchParams.get("tab") || "account";
+    const { user } = useAuth();
     return (<div className="max-w-2xl mx-auto min-w-0">
       <PageHeader title="Settings" description="Manage your account preferences and security."/>
 
@@ -21,10 +22,10 @@ export default function SettingsPage() {
         <TabsContent value="account">
           <Card>
             <FormField label="Display Name">
-              <Input defaultValue={ahmadAli.name}/>
+              <Input placeholder="Your name" defaultValue={user?.name || ""}/>
             </FormField>
             <FormField label="Email">
-              <Input type="email" defaultValue={ahmadAli.email}/>
+              <Input type="email" placeholder="name@email.com" defaultValue={user?.email || ""}/>
             </FormField>
             <FormField label="Language">
               <select className="flex h-11 w-full rounded-[6px] border border-border bg-white px-3 text-sm">
@@ -131,10 +132,10 @@ export default function SettingsPage() {
               </div>
             </FormField>
             <FormField label="Available From">
-              <Input type="date" defaultValue="2026-08-20"/>
+              <Input type="date"/>
             </FormField>
             <FormField label="Status Message">
-              <Input defaultValue={ahmadAli.availability}/>
+              <Input placeholder="Available hours or a short note"/>
             </FormField>
             <Button>Update Availability</Button>
           </Card>

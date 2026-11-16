@@ -5,6 +5,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { hiringPipeline } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
+import { useResource } from "@/lib/api";
 const stages = [
     "Recommended",
     "Interview Requested",
@@ -14,8 +15,13 @@ const stages = [
     "Rejected",
 ];
 export default function CompanyHiringPage() {
+    const hires = useResource('/company/projects/hires');
     return (<>
       <PageHeader title="Hiring Pipeline" description="Track candidates from recommendation through hire."/>
+      {!!hires.data?.items?.length && <Card className="mb-6"><CardContent className="pt-6">
+        <h2 className="text-label mb-3">Hires recorded on the platform</h2>
+        {hires.data.items.map(hire => <p key={hire.id} className="text-sm">{hire.first_name} {hire.last_name} · {hire.title} · first salary {hire.salary} · WeConnect fee {hire.fee_amount}</p>)}
+      </CardContent></Card>}
 
       <div className="flex gap-4 overflow-x-auto pb-4">
         {stages.map((stage) => {

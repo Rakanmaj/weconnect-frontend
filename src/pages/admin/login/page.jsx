@@ -41,11 +41,11 @@ export default function AdminLoginPage() {
               <AuthError message={error || auth.sessionError} />
               <div className="space-y-2">
                 <Label htmlFor="email">Admin email</Label>
-                <Input id="email" name="email" autoComplete="username" type="email" defaultValue="admin@weconnect.io" required/>
+                <Input id="email" name="email" autoComplete="username" type="email" placeholder="admin@email.com" required/>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
-                <Input id="password" name="password" autoComplete="current-password" type="password" defaultValue="WeConnect2026!" required/>
+                <Input id="password" name="password" autoComplete="current-password" type="password" placeholder="Your password" required/>
               </div>
               <Button type="submit" className="w-full" loading={loading}>
                 Sign in

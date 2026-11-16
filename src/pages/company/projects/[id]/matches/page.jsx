@@ -12,8 +12,10 @@ import { VerifiedBadge } from "@/components/ui/verified-badge";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { companyProjects, matchReasons } from "@/lib/mock-data";
 import { assignmentDisplayStatus, getMatchedAssignments, isAwaitingInvite, isInvitationPending, } from "@/lib/assignments";
+import { api, useResource } from "@/lib/api";
 export default function ProjectMatchesPage({ params }) {
     const { id } = params;
+    if (/^[0-9a-f-]{36}$/i.test(id)) return <LiveProjectMatches id={id}/>;
     const project = companyProjects.find((p) => p.id === id);
     if (!project)
         notFound();
@@ -138,4 +140,45 @@ export default function ProjectMatchesPage({ params }) {
 
       <ConfirmDialog open={inviteAllOpen} onOpenChange={setInviteAllOpen} title="Invite all Top 4?" description={`Send project invitations to all ${awaitingInvite.length} matched developers? Interviews are not part of this step.`} confirmLabel="Invite all" onConfirm={inviteAll}/>
     </>);
+}
+
+function LiveProjectMatches({ id }) {
+    const resource = useResource(`/company/projects/${id}`);
+    const [salary, setSalary] = useState("");
+    const [error, setError] = useState("");
+    const [busy, setBusy] = useState(false);
+    if (!resource.data) return <Card><CardContent className="pt-6">{resource.error || "Loading project"}</CardContent></Card>;
+    const { project, matches, milestones, submissions, hires } = resource.data;
+    async function run(path, body) {
+        setBusy(true); setError("");
+        try { await api(path, { method: "POST", body }); await resource.reload(); }
+        catch (err) { setError(err.message); }
+        finally { setBusy(false); }
+    }
+    return <>
+      <div className="mb-6">
+        <h1 className="text-h2 text-foreground">{project.title}</h1>
+        <p className="text-body-sm text-muted mt-1">Top 3 matches · {project.delivery_mode === "team" ? "Team" : "Solo elimination"} · {project.status}</p>
+      </div>
+      {error && <p className="mb-4 text-sm text-red-700">{error}</p>}
+      <div className="mb-4"><Button size="sm" disabled={busy} onClick={() => run(`/company/projects/${id}/invites`, { assignmentIds: [] })}>Invite all Top 3</Button></div>
+      <div className="grid gap-4 lg:grid-cols-2">
+        {matches.map(match => <Card key={match.id}><CardContent className="pt-6">
+          <p className="text-label">#{match.rank} {match.first_name} {match.last_name}</p>
+          <p className="text-caption mt-1">{match.career_path || "Career path not set"} · {match.total_score}% · {match.status}</p>
+          <ul className="mt-3 space-y-1 text-sm">{(match.reasons || []).map(reason => <li key={reason}>{reason}</li>)}</ul>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {project.delivery_mode === "solo" && match.status !== "eliminated" && match.status !== "hired" && <Button size="sm" variant="secondary" disabled={busy} onClick={() => run(`/company/projects/${id}/assignments/${match.id}/eliminate`, {})}>Eliminate</Button>}
+            {match.status !== "hired" && <Button size="sm" disabled={busy} onClick={() => run(`/company/projects/${id}/hires`, { developerId: match.developer_id, salary: Number(salary) || 0 })}>Hire</Button>}
+          </div>
+          {submissions.filter(item => item.match_id === match.id).map(item => <p key={item.id} className="text-caption mt-3">Phase note: {item.summary}</p>)}
+        </CardContent></Card>)}
+      </div>
+      <Card className="mt-6"><CardContent className="pt-6">
+        <p className="text-label mb-2">First-salary hire</p>
+        <input className="h-10 rounded-md border px-3 text-sm" placeholder="First salary" value={salary} onChange={event => setSalary(event.target.value)}/>
+        <p className="text-caption mt-2">WeConnect records 10% of that first salary. Phases: {milestones.map(item => item.title).join(" · ") || "None yet"}.</p>
+        {!!hires.length && <p className="text-sm mt-3">{hires.length} hire recorded on this project.</p>}
+      </CardContent></Card>
+    </>;
 }

@@ -324,7 +324,7 @@ export const karimNasser = {
     companyEvaluations: 0,
     assessmentCompleted: false,
 };
-export const topMatches = [ahmadAli, saraHassan, omarKhalid, linaFaraj];
+export const topMatches = [];
 function makeAssignment(projectId, developer, rest) {
     return {
         id: `${projectId}-${developer.id}`,
@@ -635,325 +635,45 @@ export const notCompletedProject = {
         }),
     ],
 };
-export const developerProjects = [fleetMaintenanceProject, inventoryProject, onboardingProject, completedPaidProject];
-export const companyProjects = [customerSupportProject, hrAnalyticsProject, fleetMaintenanceProject];
-export const allDeveloperProjects = [
-    fleetMaintenanceProject,
-    inventoryProject,
-    onboardingProject,
-    completedPaidProject,
-    customerSupportProject,
-    notCompletedProject,
-];
-export const adminProjectsList = [
-    customerSupportProject,
-    fleetMaintenanceProject,
-    hrAnalyticsProject,
-    inventoryProject,
-    onboardingProject,
-    completedPaidProject,
-    notCompletedProject,
-];
-export const developerNotifications = [
-    {
-        id: "n1",
-        title: "New project invitation",
-        message: "TechFlow Solutions invited you to Fleet Maintenance Dashboard — 94% match.",
-        time: "2 hours ago",
-        read: false,
-        type: "project",
-        href: "/developer/projects/invitations/proj-inv-1",
-    },
-    {
-        id: "n2",
-        title: "Challenge passed",
-        message: "You passed React Challenge Level 2 with a score of 88%.",
-        time: "Yesterday",
-        read: false,
-        type: "challenge",
-        href: "/developer/challenges/react",
-    },
-    {
-        id: "n3",
-        title: "Company feedback received",
-        message: "TechFlow Solutions submitted evaluation for Customer Management Dashboard.",
-        time: "3 days ago",
-        read: true,
-        type: "evaluation",
-    },
-    {
-        id: "n4",
-        title: "Interview request",
-        message: "TechFlow Solutions requested an interview for Full-Stack Developer role.",
-        time: "5 days ago",
-        read: true,
-        type: "interview",
-        href: "/developer/career",
-    },
-];
-export const hiringPipeline = [
-    {
-        id: "h1",
-        developer: ahmadAli,
-        stage: "Interview Scheduled",
-        role: "Full-Stack Developer",
-        company: "TechFlow Solutions",
-        lastActivity: "Interview scheduled for Aug 25",
-        sourceProject: "Customer Support Management Dashboard",
-        hiringFee: 3500,
-        timeline: [
-            { id: "he1", stage: "Recommended", date: "2026-08-10", detail: "Recommended after project match", actor: "WeConnect" },
-            { id: "he2", stage: "Interview Requested", date: "2026-08-16", detail: "Company requested a technical interview", actor: "Sarah Johnson" },
-            { id: "he3", stage: "Interview Scheduled", date: "2026-08-18", detail: "Interview booked for Aug 25, 14:00 GST", actor: "Ahmad Ali" },
-        ],
-    },
-    {
-        id: "h2",
-        developer: saraHassan,
-        stage: "Offer",
-        role: "Frontend Developer",
-        company: "TechFlow Solutions",
-        lastActivity: "Offer sent Aug 18",
-        sourceProject: "HR Analytics Dashboard",
-        hiringFee: 2800,
-        timeline: [
-            { id: "hs1", stage: "Recommended", date: "2026-08-02", detail: "Recommended from hiring challenge", actor: "WeConnect" },
-            { id: "hs2", stage: "Interview Requested", date: "2026-08-05", detail: "Interview requested", actor: "Maya Khoury" },
-            { id: "hs3", stage: "Interview Scheduled", date: "2026-08-08", detail: "Interview completed", actor: "Maya Khoury" },
-            { id: "hs4", stage: "Offer", date: "2026-08-18", detail: "Offer sent — $72,000/yr", actor: "Maya Khoury" },
-        ],
-    },
-    {
-        id: "h3",
-        developer: omarKhalid,
-        stage: "Interview Requested",
-        role: "Full-Stack Developer",
-        company: "TechFlow Solutions",
-        lastActivity: "Request sent Aug 20",
-        hiringFee: 3500,
-        timeline: [
-            { id: "ho1", stage: "Recommended", date: "2026-08-18", detail: "Added from talent search", actor: "WeConnect" },
-            { id: "ho2", stage: "Interview Requested", date: "2026-08-20", detail: "Pending developer response", actor: "Sarah Johnson" },
-        ],
-    },
-    {
-        id: "h4",
-        developer: linaFaraj,
-        stage: "Recommended",
-        role: "Backend Developer",
-        company: "TechFlow Solutions",
-        lastActivity: "Added from project comparison",
-        hiringFee: 3000,
-        timeline: [
-            { id: "hl1", stage: "Recommended", date: "2026-08-21", detail: "Recommended from CSM dashboard matches", actor: "WeConnect" },
-        ],
-    },
-];
-export const internalProjects = [
-    {
-        id: "int-1",
-        title: "WeConnect Skill Assessment Engine",
-        description: "Internal scoring service used to grade mixed-format assessments.",
-        careerPath: "Full-Stack Developer",
-        skills: ["React", "Node.js", "PostgreSQL"],
-        functionalRequirements: ["Score mixed question types", "Persist attempt history"],
-        technicalRequirements: ["Node.js service", "PostgreSQL", "React admin review"],
-        deliverables: ["Scoring API", "Review UI"],
-        difficulty: "Advanced",
-        duration: "3 weeks",
-        estimatedWorkload: "20 hrs/week",
-        status: "Open",
-        participants: 12,
-    },
-    {
-        id: "int-2",
-        title: "Developer Portfolio Generator",
-        description: "Generates a verified public portfolio from completed WeConnect work.",
-        careerPath: "Frontend Developer",
-        skills: ["Next.js", "TypeScript"],
-        functionalRequirements: ["Select completed projects", "Publish a public profile page"],
-        technicalRequirements: ["Next.js app", "Typed data models"],
-        deliverables: ["Generator UI", "Published profile template"],
-        difficulty: "Intermediate",
-        duration: "2 weeks",
-        estimatedWorkload: "15 hrs/week",
-        status: "Open",
-        participants: 8,
-    },
-    {
-        id: "int-3",
-        title: "Challenge Grading Service",
-        description: "Runs challenge test cases and records pass/fail results.",
-        careerPath: "Backend Developer",
-        skills: ["Node.js", "Docker"],
-        functionalRequirements: ["Queue challenge runs", "Return structured test results"],
-        technicalRequirements: ["Node.js worker", "Isolated runner"],
-        deliverables: ["Grading worker", "Result payload"],
-        difficulty: "Advanced",
-        duration: "4 weeks",
-        estimatedWorkload: "22 hrs/week",
-        status: "In Progress",
-        participants: 4,
-    },
-];
-export const skillChallenges = [
-    { name: "React", level: "Master", completed: 12, total: 12, next: "Architecture Challenge" },
-    { name: "JavaScript", level: "Master", completed: 10, total: 10, next: "Complete" },
-    { name: "Node.js", level: "Level 2", completed: 6, total: 8, next: "API Design Challenge" },
-    { name: "PostgreSQL", level: "Level 2", completed: 4, total: 8, next: "Query Optimization" },
-    { name: "CSS", level: "Level 2", completed: 5, total: 8, next: "Layout Systems" },
-    { name: "Git", level: "Level 2", completed: 3, total: 6, next: "Branching Workflows" },
-];
+export const developerProjects = [];
+export const companyProjects = [];
+export const allDeveloperProjects = [];
+export const adminProjectsList = [];
+export const developerNotifications = [];
+export const hiringPipeline = [];
+export const internalProjects = [];
+export const skillChallenges = [];
 export const adminMetrics = {
-    totalDevelopers: 2847,
-    accountVerifiedDevelopers: 1923,
-    weconnectVerifiedDevelopers: 412,
-    totalCompanies: 186,
-    pendingCompanyVerification: 14,
-    pendingDeveloperVerification: 47,
-    activeProjects: 128,
-    projectsAwaitingEvaluation: 23,
-    completedProjects: 891,
-    successfulHires: 156,
+    totalDevelopers: 0,
+    accountVerifiedDevelopers: 0,
+    weconnectVerifiedDevelopers: 0,
+    totalCompanies: 0,
+    pendingCompanyVerification: 0,
+    pendingDeveloperVerification: 0,
+    activeProjects: 0,
+    projectsAwaitingEvaluation: 0,
+    completedProjects: 0,
+    successfulHires: 0,
     /** Total value of purchased Paid Projects — not WeConnect income. */
-    grossProjectVolume: 284500,
+    grossProjectVolume: 0,
     /** Actual commission earned by WeConnect on purchased paid projects. */
-    projectCommissionRevenue: 71125,
-    hiringFeeRevenue: 98400,
-    subscriptionRevenue: 142800,
-    completionRate: 87,
-    hiringConversion: 34,
+    projectCommissionRevenue: 0,
+    hiringFeeRevenue: 0,
+    subscriptionRevenue: 0,
+    completionRate: 0,
+    hiringConversion: 0,
 };
-export const matchReasons = {
-    "dev-ahmad": [
-        "React — Master",
-        "3 similar projects completed",
-        "96% reliability score",
-        "Strong API assessment scores",
-        "Available during requested timeline",
-    ],
-    "dev-sara": [
-        "React — Master",
-        "2 similar dashboard projects",
-        "94% reliability score",
-        "Strong frontend assessment scores",
-    ],
-    "dev-omar": [
-        "Full-stack experience match",
-        "PostgreSQL — Level 2",
-        "91% reliability score",
-        "Available 20 hrs/week",
-    ],
-    "dev-lina": [
-        "Node.js — Master",
-        "Strong backend project history",
-        "93% reliability score",
-        "REST APIs — Master",
-    ],
-};
-export const assessmentQuestions = [
-    { id: 1, type: "coding", title: "Implement useFetch Hook", answered: true, flagged: false },
-    { id: 2, type: "multiple-choice", title: "React Reconciliation", answered: true, flagged: false },
-    { id: 3, type: "debugging", title: "Fix Memory Leak", answered: true, flagged: true },
-    { id: 4, type: "coding", title: "REST API Endpoint", answered: false, flagged: false },
-    { id: 5, type: "architecture", title: "Dashboard Data Flow", answered: false, flagged: false },
-    { id: 6, type: "explanation", title: "State Management Trade-offs", answered: false, flagged: false },
-];
-export const assessmentFollowUps = [
-    {
-        id: "fu-1",
-        sourceQuestionId: 4,
-        sourceQuestionTitle: "REST API Endpoint",
-        prompt: "You filtered tickets in the request handler rather than in the query. Explain why you made that choice and how it behaves with large result sets.",
-        rationale: "The submitted implementation returns all rows then filters in memory. The follow-up checks whether the developer understands the performance trade-off.",
-        answered: false,
-    },
-    {
-        id: "fu-2",
-        sourceQuestionId: 1,
-        sourceQuestionTitle: "Implement useFetch Hook",
-        prompt: "Explain why the effect depends on `url` and what would happen if `options` were added to the dependency array without memoization.",
-        rationale: "The hook recreates the effect when identity of options changes. This tests understanding of effect dependencies.",
-        answered: false,
-    },
-];
-export const companyTeamMembers = [
-    { id: "tm-1", name: "Sarah Johnson", email: "sarah.johnson@techflow.example.com", role: "Evaluator", lastActive: "2 hours ago" },
-    { id: "tm-2", name: "Sarah Al-Masri", email: "sarah@techflow.example.com", role: "Admin", lastActive: "2 hours ago" },
-    { id: "tm-3", name: "Khalid Nasser", email: "khalid@techflow.example.com", role: "Evaluator", lastActive: "Yesterday" },
-    { id: "tm-4", name: "Maya Khoury", email: "maya@techflow.example.com", role: "Recruiter", lastActive: "3 days ago" },
-];
-export const companyNotifications = [
-    { id: "cn1", title: "Submission received", message: "Sara Hassan submitted Customer Support Dashboard.", time: "1 hour ago", read: false, type: "submission" },
-    { id: "cn2", title: "Interview confirmed", message: "Ahmad Ali confirmed interview for Aug 25.", time: "5 hours ago", read: false, type: "interview" },
-    { id: "cn3", title: "Evaluation pending", message: "Sara Hassan is awaiting evaluation on Customer Support project.", time: "Yesterday", read: true, type: "evaluation" },
-    { id: "cn4", title: "Payment processed", message: "Invoice #INV-2847 paid successfully.", time: "2 days ago", read: true, type: "payment" },
-];
-export const companyPayments = [
-    { id: "pay-1", invoice: "INV-2847", project: "Customer Management Dashboard", amount: 4200, status: "Paid", date: "2026-08-01", type: "Project Purchase" },
-    { id: "pay-2", invoice: "INV-2901", project: "Customer Support Management Dashboard", amount: 5800, status: "Pending", date: "2026-09-15", type: "Project Purchase" },
-    { id: "pay-3", invoice: "INV-2756", project: "Inventory Tracking Portal", amount: 0, status: "Not Applicable", date: "2026-07-12", type: "Training Project" },
-];
-export const companyInterviews = [
-    { id: "int-1", developer: ahmadAli, role: "Full-Stack Developer", date: "2026-08-25", time: "2:00 PM GST", status: "Scheduled", type: "Video" },
-    { id: "int-2", developer: omarKhalid, role: "Full-Stack Developer", date: "2026-08-28", time: "11:00 AM GST", status: "Requested", type: "Video" },
-];
-export const companyOffers = [
-    { id: "off-1", developer: saraHassan, role: "Frontend Developer", salary: "$72,000/yr", status: "Sent", sentDate: "2026-08-18", expires: "2026-08-25" },
-    { id: "off-2", developer: ahmadAli, role: "Full-Stack Developer", salary: "$85,000/yr", status: "Draft", sentDate: "—", expires: "—" },
-];
-export const companyEvaluations = [
-    { id: "ev-1", developer: saraHassan, project: "Customer Support Management Dashboard", status: "Pending", dueDate: "2026-09-01" },
-    { id: "ev-3", developer: saraHassan, project: "Fleet Maintenance Dashboard", status: "Pending", dueDate: "2026-09-09" },
-    { id: "ev-2", developer: ahmadAli, project: "Customer Management Dashboard", status: "Completed", score: 92, dueDate: "2026-06-20" },
-];
-export const projectSubmissions = [
-    {
-        id: "sub-sara-csm",
-        assignmentId: "proj-csm-dashboard-dev-sara",
-        developerId: "dev-sara",
-        submittedAt: "2026-08-19",
-        summary: "Complete ticket dashboard with agent assignment, SLA widgets and a reporting page.",
-        demoUrl: "https://demo.weconnect.example/sara-csm",
-        previewUrl: "https://preview.weconnect.example/sara-csm",
-        screenshots: ["Ticket board", "SLA overview", "Agent assignment"],
-        technicalSummary: "React + TypeScript UI with a mock REST layer. Focused on dashboard density and keyboard-accessible ticket actions.",
-        requirementsMet: 6,
-        requirementsTotal: 7,
-        repositoryUrl: "github.com/sarahassan/support-ui",
-        repositoryUnlocked: false,
-    },
-    {
-        id: "sub-sara-fleet",
-        assignmentId: "proj-inv-1-dev-sara",
-        developerId: "dev-sara",
-        submittedAt: "2026-09-05",
-        summary: "Complete fleet operations dashboard with vehicle health indicators, prioritized work orders, technician assignment, and searchable maintenance history.",
-        demoUrl: "https://demo.weconnect.example/sara-fleet",
-        previewUrl: "https://preview.weconnect.example/sara-fleet",
-        screenshots: ["Fleet overview", "Work order board", "Service history"],
-        technicalSummary: "React and TypeScript interface backed by a simulated Node.js API and PostgreSQL data model. Includes responsive dispatcher and technician views.",
-        requirementsMet: 4,
-        requirementsTotal: 4,
-        repositoryUrl: "github.com/sarahassan/fleet-maintenance-dashboard",
-        repositoryUnlocked: false,
-    },
-    {
-        id: "sub-lina-fleet",
-        assignmentId: "proj-inv-1-dev-lina",
-        developerId: "dev-lina",
-        submittedAt: "2026-09-04",
-        summary: "Fleet maintenance workspace focused on mobile technician updates, service scheduling, and vehicle-level maintenance timelines.",
-        demoUrl: "https://demo.weconnect.example/lina-fleet",
-        previewUrl: "https://preview.weconnect.example/lina-fleet",
-        screenshots: ["Technician queue", "Vehicle timeline", "Service calendar"],
-        technicalSummary: "Responsive React dashboard with role-based prototype states, REST endpoint contracts, and a normalized PostgreSQL service-history schema.",
-        requirementsMet: 3,
-        requirementsTotal: 4,
-        repositoryUrl: "github.com/linafaraj/fleet-operations-ui",
-        repositoryUnlocked: false,
-    },
-];
+export const matchReasons = {};
+
+export const assessmentQuestions = [];
+export const assessmentFollowUps = [];
+export const companyTeamMembers = [];
+export const companyNotifications = [];
+export const companyPayments = [];
+export const companyInterviews = [];
+export const companyOffers = [];
+export const companyEvaluations = [];
+export const projectSubmissions = [];
 export const developerProgress = csmAssignments
     .filter((a) => a.invitationStatus === "Accepted")
     .map((a) => ({
@@ -991,378 +711,27 @@ export const evaluationRubric = DEFAULT_COMPANY_EVALUATION_RUBRIC.map((c) => ({
     weight: c.weight,
     description: c.description,
 }));
-export const developerEvaluations = [
-    {
-        id: "deval-sara-csm",
-        assignmentId: "proj-csm-dashboard-dev-sara",
-        developerId: "dev-sara",
-        projectId: "proj-csm-dashboard",
-        scores: [],
-        completionDecision: "Pending",
-        status: "Under Review",
-    },
-    {
-        id: "deval-ahmad-cmd",
-        assignmentId: "proj-completed-1-dev-ahmad",
-        developerId: "dev-ahmad",
-        projectId: "proj-completed-1",
-        scores: DEFAULT_COMPANY_EVALUATION_RUBRIC.map((c) => ({ key: c.key, score: 4, comment: "" })),
-        overallFeedback: "Strong delivery. Requirements were met and communication stayed consistent.",
-        completionDecision: "Completed",
-        status: "Completed",
-        evaluatedBy: "Sarah Johnson",
-        evaluatedAt: "2026-06-18",
-    },
-];
-export const projectActivityTimeline = [
-    { id: "pa1", title: "Project Created", detail: "TechFlow submitted Customer Support Management Dashboard.", time: "Aug 10", date: "2026-08-10" },
-    { id: "pa2", title: "AI Analysis Completed", detail: "Structured requirements and complexity estimate generated.", time: "Aug 10", date: "2026-08-10" },
-    { id: "pa3", title: "Top 4 Matches Generated", detail: "Ahmad, Sara, Omar and Lina selected.", time: "Aug 11", date: "2026-08-11" },
-    { id: "pa4", title: "Invitations Sent", detail: "Company invited matched developers to the project.", time: "Aug 12", date: "2026-08-12" },
-    { id: "pa5", title: "Ahmad Accepted", detail: "Ahmad Ali accepted and started work.", time: "Aug 13", date: "2026-08-13" },
-    { id: "pa6", title: "Omar Declined", detail: "Omar Khalid declined. No reliability penalty applied.", time: "Aug 13", date: "2026-08-13" },
-    { id: "pa7", title: "Sara Accepted", detail: "Sara Hassan accepted the invitation.", time: "Aug 13", date: "2026-08-13" },
-    { id: "pa8", title: "Lina Accepted", detail: "Lina Faraj accepted the invitation.", time: "Aug 14", date: "2026-08-14" },
-    { id: "pa9", title: "Kickoff Completed", detail: "Sarah Johnson completed kickoff with accepted developers.", time: "Aug 14", date: "2026-08-14" },
-    { id: "pa10", title: "Sara Submitted", detail: "Sara Hassan submitted a completed preview and technical summary.", time: "Aug 19", date: "2026-08-19" },
-    { id: "pa11", title: "Company Reviewed Submission", detail: "Sara's preview is under review. Repository remains locked until purchase.", time: "2 hours ago", date: "2026-08-27" },
-];
-export const adminDeveloperQueue = [
-    { id: "vq-1", developer: karimNasser, submitted: "2026-08-19", documents: 4, adminNotes: "" },
-    { id: "vq-2", developer: youssefHaddad, submitted: "2026-08-18", documents: 3, adminNotes: "" },
-    { id: "vq-3", developer: nadiaSaleh, submitted: "2026-08-15", documents: 2, adminNotes: nadiaSaleh.adminNotes ?? "" },
-];
-export const adminCompanyQueue = [
-    {
-        id: "cvq-1",
-        company: {
-            id: "comp-new-1",
-            name: "NovaTech Labs",
-            industry: "FinTech",
-            location: "Dubai, UAE",
-            website: "https://novatech.example.com",
-            verified: false,
-            verificationStatus: "Pending Verification",
-            size: "10-50",
-            officialEmail: "hr@novatech.example.com",
-            registrationNumber: "AE-99821",
-            registrationCountry: "United Arab Emirates",
-            foundedYear: "2021",
-            about: "Payments infrastructure for regional fintechs.",
-            contactPerson: { name: "Hana Al Farsi", title: "People Operations Lead", email: "hana@novatech.example.com", phone: "+971 4 555 0190" },
-            verificationDocuments: [
-                { id: "cd1", name: "Trade license", type: "Other", uploadedAt: "2026-08-20", status: "Pending Review", fileName: "NovaTech_License.pdf" },
-                { id: "cd2", name: "Company profile", type: "Other", uploadedAt: "2026-08-20", status: "Pending Review", fileName: "NovaTech_Profile.pdf" },
-            ],
-            submittedAt: "2026-08-20",
-        },
-        submitted: "2026-08-20",
-        contact: "hr@novatech.example.com",
-    },
-    {
-        id: "cvq-2",
-        company: {
-            id: "comp-new-2",
-            name: "GreenPath Health",
-            industry: "Healthcare",
-            location: "Riyadh, Saudi Arabia",
-            website: "https://greenpath.example.com",
-            verified: false,
-            verificationStatus: "Pending Verification",
-            size: "50-200",
-            officialEmail: "ops@greenpath.example.com",
-            registrationNumber: "SA-44120",
-            registrationCountry: "Saudi Arabia",
-            foundedYear: "2018",
-            about: "Digital health operations platform.",
-            contactPerson: { name: "Faisal Rahman", title: "CTO Office", email: "faisal@greenpath.example.com" },
-            verificationDocuments: [
-                { id: "cd3", name: "Commercial registration", type: "Other", uploadedAt: "2026-08-17", status: "Pending Review", fileName: "GreenPath_CR.pdf" },
-            ],
-            submittedAt: "2026-08-17",
-        },
-        submitted: "2026-08-17",
-        contact: "ops@greenpath.example.com",
-    },
-];
-export const adminDevelopersList = [ahmadAli, saraHassan, omarKhalid, linaFaraj, youssefHaddad, nadiaSaleh, karimNasser];
-export const adminCompaniesList = [
-    techFlowCompany,
-    adminCompanyQueue[0].company,
-    adminCompanyQueue[1].company,
-    {
-        id: "comp-3",
-        name: "DataStream Inc",
-        industry: "Analytics",
-        location: "Cairo, Egypt",
-        website: "https://datastream.example.com",
-        verified: true,
-        verificationStatus: "Verified",
-        size: "200-500",
-        officialEmail: "partnerships@datastream.example.com",
-        contactPerson: { name: "Nour Adel", title: "Talent Lead", email: "nour@datastream.example.com" },
-    },
-];
-export const adminAssessments = [
-    {
-        id: "as-1",
-        name: "Frontend Developer Assessment",
-        careerPath: "Frontend Developer",
-        description: "Initial assessment covering React, JavaScript, CSS and UI architecture.",
-        duration: 90,
-        status: "Active",
-        questionCount: 24,
-        passScore: 70,
-        aiFollowUpEnabled: true,
-        passRate: 72,
-        updatedAt: "2026-08-12",
-    },
-    {
-        id: "as-2",
-        name: "Backend Developer Assessment",
-        careerPath: "Backend Developer",
-        description: "Initial assessment covering APIs, databases, debugging and service design.",
-        duration: 90,
-        status: "Active",
-        questionCount: 18,
-        passScore: 70,
-        aiFollowUpEnabled: true,
-        passRate: 65,
-        updatedAt: "2026-08-10",
-    },
-    {
-        id: "as-3",
-        name: "Full-Stack Developer Assessment",
-        careerPath: "Full-Stack Developer",
-        description: "Initial assessment covering React, Node.js, REST APIs, PostgreSQL and architecture.",
-        duration: 90,
-        status: "Active",
-        questionCount: 22,
-        passScore: 70,
-        aiFollowUpEnabled: true,
-        passRate: 68,
-        updatedAt: "2026-08-08",
-    },
-];
-export const adminQuestions = [
-    {
-        id: "q-1",
-        assessmentId: "as-3",
-        order: 1,
-        type: "Coding",
-        prompt: "Implement a useFetch hook that loads JSON from a URL and exposes data, error and loading states.",
-        starterCode: "export function useFetch(url) {\n  // TODO\n}",
-        language: "JavaScript",
-        expectedOutcome: "Hook returns { data, error, loading } and refetches when url changes.",
-        testCases: ["Loads data on mount", "Sets error on failure", "Refetches when url changes"],
-        points: 15,
-        status: "Active",
-        aiFollowUpEnabled: true,
-    },
-    {
-        id: "q-2",
-        assessmentId: "as-3",
-        order: 2,
-        type: "Multiple Choice",
-        prompt: "What does React reconciliation compare when deciding whether to update a host component?",
-        options: ["Component class identity only", "Element type and key", "Function source text", "Fiber index only"],
-        correctOptionIndex: 1,
-        points: 5,
-        status: "Active",
-        aiFollowUpEnabled: false,
-    },
-    {
-        id: "q-3",
-        assessmentId: "as-3",
-        order: 3,
-        type: "Debugging",
-        prompt: "This effect subscribes to a socket but never cleans up. Fix the memory leak.",
-        starterCode: "useEffect(() => {\n  socket.on('ticket', handler);\n}, []);",
-        language: "JavaScript",
-        expectedOutcome: "Effect returns an unsubscribe/cleanup function.",
-        testCases: ["Unsubscribes on unmount", "Does not register duplicate listeners"],
-        points: 10,
-        status: "Active",
-        aiFollowUpEnabled: true,
-    },
-    {
-        id: "q-4",
-        assessmentId: "as-3",
-        order: 4,
-        type: "Coding",
-        prompt: "Implement GET /api/tickets with status filter and pagination.",
-        starterCode: "export async function getTickets(req, res) {\n  // TODO\n}",
-        language: "JavaScript",
-        expectedOutcome: "Returns { data, total, page, limit } from PostgreSQL.",
-        testCases: ["Filters by status", "Paginates results", "Handles invalid page"],
-        points: 20,
-        status: "Active",
-        aiFollowUpEnabled: true,
-    },
-    {
-        id: "q-5",
-        assessmentId: "as-3",
-        order: 5,
-        type: "Architecture / Scenario",
-        prompt: "A support dashboard must stay usable while ticket volume spikes. Outline the data flow from API to UI.",
-        points: 15,
-        status: "Active",
-        aiFollowUpEnabled: false,
-    },
-    {
-        id: "q-6",
-        assessmentId: "as-3",
-        order: 6,
-        type: "Explanation / Reasoning",
-        prompt: "When would you keep ticket filters in the database query instead of filtering in the client?",
-        points: 10,
-        status: "Active",
-        aiFollowUpEnabled: false,
-    },
-];
-export const adminChallenges = [
-    { id: "ch-r1", name: "JSX & Components", skill: "React", level: "Level 1", order: 1, description: "Build components from a design spec.", difficulty: "Beginner", instructions: "Create presentational components without extra state.", status: "Active", starterCode: "export function Card() {\n  return null;\n}", language: "JavaScript", testCases: ["Renders title", "Accepts children"] },
-    { id: "ch-r2", name: "State & Effects", skill: "React", level: "Level 1", order: 2, description: "Manage local state and a data-loading effect.", difficulty: "Beginner", instructions: "Fetch a list and render loading/empty/error states.", status: "Active" },
-    { id: "ch-r3", name: "Lists & Keys", skill: "React", level: "Level 1", order: 3, description: "Render dynamic ticket rows with stable keys.", difficulty: "Beginner", instructions: "Avoid index keys when items can be reordered.", status: "Active" },
-    { id: "ch-r4", name: "Hooks Deep Dive", skill: "React", level: "Level 2", order: 4, description: "Extract a reusable data hook.", difficulty: "Intermediate", instructions: "Share fetching logic without duplicating effects.", status: "Active" },
-    { id: "ch-r5", name: "Performance Patterns", skill: "React", level: "Level 2", order: 5, description: "Memoize expensive dashboard widgets.", difficulty: "Intermediate", instructions: "Use memoization only where profiling justifies it.", status: "Active" },
-    { id: "ch-r6", name: "Form State", skill: "React", level: "Level 2", order: 6, description: "Build a validated ticket form.", difficulty: "Intermediate", instructions: "Handle field-level and submit-level errors.", status: "Active" },
-    { id: "ch-r7", name: "Advanced React Challenge", skill: "React", level: "Master", order: 7, description: "Compose a multi-view dashboard with shared state.", difficulty: "Advanced", instructions: "Keep state predictable as views switch.", status: "Active" },
-    { id: "ch-r8", name: "Architecture Challenge", skill: "React", level: "Master", order: 8, description: "Propose and implement a folder/module structure.", difficulty: "Advanced", instructions: "Separate UI, data and domain logic.", status: "Active" },
-    { id: "ch-n1", name: "HTTP Basics", skill: "Node.js", level: "Level 1", order: 1, description: "Create a JSON GET endpoint.", difficulty: "Beginner", instructions: "Return 200 with a typed payload.", status: "Active" },
-    { id: "ch-n2", name: "Routing", skill: "Node.js", level: "Level 1", order: 2, description: "Add parameterized ticket routes.", difficulty: "Beginner", instructions: "Handle missing resources with 404.", status: "Active" },
-    { id: "ch-n3", name: "API Design Challenge", skill: "Node.js", level: "Level 2", order: 3, description: "Design pagination and filtering for tickets.", difficulty: "Intermediate", instructions: "Keep query params consistent.", status: "Active" },
-];
-export const adminChallengePaths = [
-    { id: "ch-1", skill: "React", levels: ["Level 1", "Level 2", "Master"], enrolled: 842, completion: 68 },
-    { id: "ch-2", skill: "JavaScript", levels: ["Level 1", "Level 2", "Master"], enrolled: 1204, completion: 74 },
-    { id: "ch-3", skill: "Node.js", levels: ["Level 1", "Level 2"], enrolled: 567, completion: 61 },
-];
-export const adminSkills = [
-    { id: "sk-1", name: "React", category: "Frontend", careerPaths: ["Frontend Developer", "Full-Stack Developer"], status: "Active", assessmentIds: ["as-1", "as-3"], challengeIds: ["ch-r1", "ch-r2", "ch-r3", "ch-r4", "ch-r5", "ch-r6", "ch-r7", "ch-r8"], developerCount: 1240, description: "Component-driven UI for web applications." },
-    { id: "sk-2", name: "Node.js", category: "Backend", careerPaths: ["Backend Developer", "Full-Stack Developer"], status: "Active", assessmentIds: ["as-2", "as-3"], challengeIds: ["ch-n1", "ch-n2", "ch-n3"], developerCount: 890, description: "Server-side JavaScript for APIs and workers." },
-    { id: "sk-3", name: "PostgreSQL", category: "Database", careerPaths: ["Backend Developer", "Full-Stack Developer"], status: "Active", assessmentIds: ["as-2", "as-3"], challengeIds: [], developerCount: 654, description: "Relational data modeling and querying." },
-    { id: "sk-4", name: "TypeScript", category: "Language", careerPaths: ["Frontend Developer", "Backend Developer", "Full-Stack Developer"], status: "Active", assessmentIds: ["as-1"], challengeIds: [], developerCount: 1102, description: "Typed JavaScript used across client and server." },
-];
-export const adminReliabilityHistory = [
-    { id: "rh-1", developer: ahmadAli, event: "Project completed on time", impact: "+2", date: "2026-08-01", score: 96 },
-    { id: "rh-2", developer: omarKhalid, event: "Late submission — 2 days", impact: "-3", date: "2026-07-15", score: 91 },
-    { id: "rh-3", developer: saraHassan, event: "Perfect requirements match", impact: "+1", date: "2026-07-28", score: 94 },
-    { id: "rh-4", developer: omarKhalid, event: "Declined Fleet Maintenance invitation", impact: "0", date: "2026-08-13", score: 91 },
-];
-export const adminDisputes = [
-    { id: "dp-1", type: "Payment", parties: "TechFlow vs Ahmad Ali", status: "Open", opened: "2026-08-10", priority: "High", companyId: "company-1", project: "Customer Management Dashboard" },
-    { id: "dp-2", type: "Evaluation", parties: "NovaTech vs Platform", status: "Under Review", opened: "2026-08-05", priority: "Medium", companyId: "comp-new-1", project: "—" },
-];
-export const adminSubscriptions = [
-    { id: "sub-plan-1", company: "TechFlow Solutions", plan: "Enterprise", mrr: 2400, status: "Active", renews: "2026-09-01" },
-    { id: "sub-plan-2", company: "DataStream Inc", plan: "Growth", mrr: 890, status: "Active", renews: "2026-08-28" },
-    { id: "sub-plan-3", company: "NovaTech Labs", plan: "Starter", mrr: 299, status: "Trial", renews: "2026-08-25" },
-];
-export const adminPaymentsList = [
-    {
-        id: "ap-1",
-        project: "Customer Management Dashboard",
-        company: "TechFlow Solutions",
-        developer: "Ahmad Ali",
-        type: "Project Commission",
-        grossAmount: 4200,
-        commissionPercentage: DEFAULT_PLATFORM_SETTINGS.projectCommissionPercentage,
-        weconnectRevenue: 1050,
-        developerPayout: 3150,
-        amount: 1050,
-        status: "Paid",
-        date: "2026-08-01",
-    },
-    {
-        id: "ap-2",
-        project: "—",
-        company: "DataStream Inc",
-        developer: "—",
-        type: "Subscription",
-        grossAmount: 890,
-        commissionPercentage: 0,
-        weconnectRevenue: 890,
-        developerPayout: 0,
-        amount: 890,
-        status: "Paid",
-        date: "2026-08-01",
-    },
-    {
-        id: "ap-3",
-        project: "Full-Stack Developer search",
-        company: "GreenPath Health",
-        developer: "—",
-        type: "Hiring Fee",
-        grossAmount: 3500,
-        commissionPercentage: 0,
-        weconnectRevenue: 3500,
-        developerPayout: 0,
-        amount: 3500,
-        status: "Pending",
-        date: "2026-08-15",
-    },
-    {
-        id: "ap-4",
-        project: "Customer Support Management Dashboard",
-        company: "TechFlow Solutions",
-        developer: "Pending selection",
-        type: "Project Commission",
-        grossAmount: 5800,
-        commissionPercentage: DEFAULT_PLATFORM_SETTINGS.projectCommissionPercentage,
-        weconnectRevenue: 1450,
-        developerPayout: 4350,
-        amount: 1450,
-        status: "Pending",
-        date: "2026-09-15",
-    },
-];
-export const reportChartData = {
-    developerGrowth: [
-        { month: "Mar", developers: 1820, verified: 298 },
-        { month: "Apr", developers: 2010, verified: 324 },
-        { month: "May", developers: 2240, verified: 356 },
-        { month: "Jun", developers: 2480, verified: 378 },
-        { month: "Jul", developers: 2670, verified: 395 },
-        { month: "Aug", developers: 2847, verified: 412 },
-    ],
-    projectVolume: [
-        { month: "Mar", active: 72, completed: 98 },
-        { month: "Apr", active: 85, completed: 112 },
-        { month: "May", active: 96, completed: 128 },
-        { month: "Jun", active: 108, completed: 145 },
-        { month: "Jul", active: 118, completed: 162 },
-        { month: "Aug", active: 128, completed: 178 },
-    ],
-    revenue: [
-        { month: "Mar", commission: 10500, recruitment: 12000, subscriptions: 98000 },
-        { month: "Apr", commission: 12000, recruitment: 14500, subscriptions: 105000 },
-        { month: "May", commission: 13000, recruitment: 16200, subscriptions: 112000 },
-        { month: "Jun", commission: 14500, recruitment: 17800, subscriptions: 118000 },
-        { month: "Jul", commission: 16000, recruitment: 19200, subscriptions: 128000 },
-        { month: "Aug", commission: 18000, recruitment: 21000, subscriptions: 142800 },
-    ],
-};
-export const companyDashboardChart = {
-    hiringFunnel: [
-        { stage: "Recommended", count: 12 },
-        { stage: "Interview", count: 8 },
-        { stage: "Offer", count: 4 },
-        { stage: "Hired", count: 2 },
-    ],
-    spendByMonth: [
-        { month: "May", amount: 4200 },
-        { month: "Jun", amount: 5800 },
-        { month: "Jul", amount: 2400 },
-        { month: "Aug", amount: 5800 },
-    ],
-};
-export const allDevelopers = [ahmadAli, saraHassan, omarKhalid, linaFaraj];
-export const selfDeclaredSkills = [
-    { name: "Docker", level: "Level 1", verified: false },
-    { name: "AWS", level: "Level 1", verified: false },
-    { name: "GraphQL", level: "Level 2", verified: false },
-];
+export const developerEvaluations = [];
+export const projectActivityTimeline = [];
+export const adminDeveloperQueue = [];
+export const adminCompanyQueue = [];
+export const adminDevelopersList = [];
+export const adminCompaniesList = [];
+export const adminAssessments = [];
+export const adminQuestions = [];
+export const adminChallenges = [];
+export const adminChallengePaths = [];
+export const adminSkills = [];
+export const adminReliabilityHistory = [];
+export const adminDisputes = [];
+export const adminSubscriptions = [];
+export const adminPaymentsList = [];
+export const reportChartData = { developerGrowth: [], projectVolume: [], revenue: [] };
+
+export const companyDashboardChart = { hiringFunnel: [], spendByMonth: [] };
+
+export const allDevelopers = [];
+export const selfDeclaredSkills = [];
 export const assessmentResults = {
     overallLevel: 2,
     levelLabel: "Developing",
@@ -1405,25 +774,10 @@ export const developerOffer = {
     status: "Pending",
     message: "We were impressed by your verified project performance and assessment scores. We'd like to extend an offer to join our product engineering team.",
 };
-export const projectMilestones = [
-    { id: "m1", title: "Authentication & RBAC", dueDate: "2026-08-25", status: "Completed", progress: 100 },
-    { id: "m2", title: "Ticket Dashboard UI", dueDate: "2026-09-01", status: "In Progress", progress: 65 },
-    { id: "m3", title: "REST API & PostgreSQL", dueDate: "2026-09-08", status: "Pending", progress: 0 },
-    { id: "m4", title: "Reporting Module", dueDate: "2026-09-15", status: "Pending", progress: 0 },
-];
-export const developerProjectSubmissions = [
-    { id: "s1", title: "Milestone 1 — Auth Module", date: "2026-08-22", status: "Approved", score: 92 },
-    { id: "s2", title: "Ticket Dashboard — Draft", date: "2026-08-24", status: "Under Review", score: null },
-];
-export const projectFeedback = [
-    { id: "f1", from: "Sarah Johnson", date: "2026-08-23", message: "Auth implementation is solid. Consider adding session timeout handling in the next iteration.", rating: 4 },
-];
-export const projectActivity = [
-    { id: "a1", action: "Submission uploaded", detail: "Ticket Dashboard — Draft", time: "2 hours ago" },
-    { id: "a2", action: "Milestone completed", detail: "Authentication & RBAC", time: "3 days ago" },
-    { id: "a3", action: "Feedback received", detail: "From Sarah Johnson", time: "4 days ago" },
-    { id: "a4", action: "Project started", detail: "Customer Support Management Dashboard", time: "1 week ago" },
-];
+export const projectMilestones = [];
+export const developerProjectSubmissions = [];
+export const projectFeedback = [];
+export const projectActivity = [];
 export function getVerifiedCriteria(developer) {
     const s = DEFAULT_PLATFORM_SETTINGS;
     return [
@@ -1452,13 +806,5 @@ export function getVerifiedCriteria(developer) {
     ];
 }
 export const verifiedCriteria = getVerifiedCriteria(ahmadAli);
-export const reactChallengePath = [
-    { id: 1, title: "JSX & Components", level: "Level 1", completed: true },
-    { id: 2, title: "State & Effects", level: "Level 1", completed: true },
-    { id: 3, title: "Hooks Deep Dive", level: "Level 2", completed: true },
-    { id: 4, title: "Performance Patterns", level: "Level 2", completed: true },
-    { id: 5, title: "Architecture Challenge", level: "Master", completed: false, current: true },
-];
-export const companyDisputes = [
-    { id: "cdp-1", project: "Customer Management Dashboard", type: "Payment", status: "Open", opened: "2026-08-10" },
-];
+export const reactChallengePath = [];
+export const companyDisputes = [];

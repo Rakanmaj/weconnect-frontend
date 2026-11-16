@@ -17,11 +17,11 @@ export default function RegisterDeveloperPage() {
     const router = useRouter();
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    const [firstName, setFirstName] = useState("Ahmad");
-    const [lastName, setLastName] = useState("Ali");
-    const [preferredRole, setPreferredRole] = useState("Full-Stack Developer");
-    const [location, setLocation] = useState("Amman, Jordan");
-    const [github, setGithub] = useState("https://github.com/ahmad-ali");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [preferredRole, setPreferredRole] = useState("");
+    const [location, setLocation] = useState("");
+    const [github, setGithub] = useState("");
     async function handleSubmit(e) {
         e.preventDefault();
         const data = Object.fromEntries(new FormData(e.currentTarget));
@@ -46,13 +46,13 @@ export default function RegisterDeveloperPage() {
               <Label htmlFor="firstName" required>
                 First name
               </Label>
-              <Input id="firstName" name="firstName" required value={firstName} onChange={(event) => setFirstName(event.target.value)} className="h-10 rounded-xl"/>
+              <Input id="firstName" name="firstName" required placeholder="First name" value={firstName} onChange={(event) => setFirstName(event.target.value)} className="h-10 rounded-xl"/>
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="lastName" required>
                 Last name
               </Label>
-              <Input id="lastName" name="lastName" required value={lastName} onChange={(event) => setLastName(event.target.value)} className="h-10 rounded-xl"/>
+              <Input id="lastName" name="lastName" required placeholder="Last name" value={lastName} onChange={(event) => setLastName(event.target.value)} className="h-10 rounded-xl"/>
             </div>
           </div>
 
@@ -61,7 +61,7 @@ export default function RegisterDeveloperPage() {
               <Label htmlFor="email" required>
                 Email
               </Label>
-              <Input id="email" name="email" type="email" required defaultValue="ahmad.ali@example.com" className="h-10 rounded-xl"/>
+              <Input id="email" name="email" type="email" required placeholder="name@email.com" className="h-10 rounded-xl"/>
             </div>
 
             <div className="space-y-1.5">
@@ -80,12 +80,12 @@ export default function RegisterDeveloperPage() {
               <Label htmlFor="location" required>
                 Location
               </Label>
-              <Input id="location" name="location" required value={location} onChange={(event) => setLocation(event.target.value)} className="h-10 rounded-xl"/>
+              <Input id="location" name="location" required placeholder="City, country" value={location} onChange={(event) => setLocation(event.target.value)} className="h-10 rounded-xl"/>
             </div>
 
             <div className="space-y-1.5">
               <Label htmlFor="github">GitHub profile</Label>
-              <Input id="github" name="github" type="url" value={github} onChange={(event) => setGithub(event.target.value)} className="h-10 rounded-xl"/>
+              <Input id="github" name="github" type="url" placeholder="https://github.com/username" value={github} onChange={(event) => setGithub(event.target.value)} className="h-10 rounded-xl"/>
             </div>
           </div>
 
@@ -94,14 +94,14 @@ export default function RegisterDeveloperPage() {
               <Label htmlFor="password" required>
                 Password
               </Label>
-              <Input id="password" name="password" type="password" required minLength={8} defaultValue="WeConnect2026!" className="h-10 rounded-xl"/>
+              <Input id="password" name="password" type="password" required minLength={8} placeholder="At least 8 characters" className="h-10 rounded-xl"/>
             </div>
 
             <div className="space-y-1.5">
               <Label htmlFor="confirmPassword" required>
                 Confirm password
               </Label>
-              <Input id="confirmPassword" name="confirmPassword" type="password" required minLength={8} defaultValue="WeConnect2026!" className="h-10 rounded-xl"/>
+              <Input id="confirmPassword" name="confirmPassword" type="password" required minLength={8} placeholder="Repeat your password" className="h-10 rounded-xl"/>
             </div>
           </div>
 

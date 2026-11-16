@@ -3,7 +3,6 @@ import { ArrowRight, Eye, Heart, Rocket } from "lucide-react";
 import { PublicLayout } from "@/components/layout/public-layout";
 import { CtaSection } from "@/components/public/cta-section";
 import { PageHeader } from "@/components/public/page-header";
-import { adminMetrics } from "@/lib/mock-data";
 export const metadata = {
     title: "About",
     description: "Learn about WeConnect's mission to transform developer hiring through verified performance.",
@@ -50,16 +49,9 @@ export default function AboutPage() {
                 make it—replacing "trust me" with "here's the proof."
               </p>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              {[
-            { label: "Developers", value: adminMetrics.totalDevelopers.toLocaleString() },
-            { label: "Companies", value: adminMetrics.totalCompanies.toLocaleString() },
-            { label: "Projects Completed", value: adminMetrics.completedProjects.toLocaleString() },
-            { label: "Successful Hires", value: adminMetrics.successfulHires.toLocaleString() },
-        ].map((stat) => (<div key={stat.label} className="public-stat-card px-5 py-6">
-                  <p className="text-h1 text-foreground">{stat.value}</p>
-                  <p className="text-body-sm text-muted mt-1">{stat.label}</p>
-                </div>))}
+            <div className="public-stat-card px-6 py-8">
+              <p className="text-h3 text-foreground">Proof over interviews</p>
+              <p className="text-body-sm text-muted mt-3">Levels, project reviews, and hires are counted from real accounts. There is no sample population on this page.</p>
             </div>
           </div>
         </div>

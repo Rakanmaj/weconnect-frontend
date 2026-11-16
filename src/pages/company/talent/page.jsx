@@ -36,6 +36,7 @@ export default function CompanyTalentPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
+        {!filtered.length && <p className="text-body-sm text-muted">No developers to show yet.</p>}
         {filtered.map((dev) => (<Card key={dev.id}>
             <CardContent className="pt-6">
               <div className="flex items-start gap-4">

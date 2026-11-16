@@ -8,7 +8,7 @@ const cards = [
         delay: 0.35,
     },
     {
-        label: "94% Project Match",
+        label: "Project Match",
         icon: Sparkles,
         className: "right-0 top-[8%] sm:right-2",
         delay: 0.5,

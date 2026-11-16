@@ -51,9 +51,12 @@ backend, preserving the existing cookie-based same-origin authentication flow.
 Authentication, profiles/onboarding, private uploads, initial verification, staff
 roles, recovery, timed assessments, skills/challenges and internal projects use
 the Express/PostgreSQL backend. Company staff sign in with owner-provisioned
-credentials. Objective code checks and administrator grading are implemented.
-AI grading/follow-ups and later company project/hiring/finance screens remain
-planned or prototype behavior. There is no payment gateway.
+credentials. Exam scoring is automatic; suspected cheating requires administrator
+review. If automatic grading is unavailable, saved answers are preserved and the
+interface supports retrying the submission or loading the saved attempt again.
+Adaptive assessment follow-ups remain unfinished. Company project persistence is
+included in the backend integration; other later screens may still use prototype
+behavior. There is no payment gateway.
 
 ## Entry routes
 
