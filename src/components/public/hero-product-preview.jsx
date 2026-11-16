@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
-import { ahmadAli, customerSupportProject } from "@/lib/mock-data";
 export function HeroProductPreview() {
     return (<div className="relative mx-auto max-w-4xl">
       <div className="absolute -inset-4 bg-gradient-to-b from-primary/5 to-teal/5 rounded-2xl blur-2xl"/>
@@ -24,19 +23,14 @@ export function HeroProductPreview() {
             <p className="text-table-header">Active Project</p>
             <div className="rounded-lg border border-border bg-card p-3">
               <Badge variant="primary" size="sm">
-                {customerSupportProject.matchScore}% Match
+                Project
               </Badge>
               <p className="text-label text-foreground mt-2 line-clamp-2">
-                {customerSupportProject.title}
+                Your project title
               </p>
               <p className="text-caption mt-1 truncate">
-                {customerSupportProject.company.name}
+                Your company
               </p>
-              <div className="mt-3 flex flex-wrap gap-1">
-                {customerSupportProject.technologies.slice(0, 3).map((tech) => (<span key={tech} className="text-[10px] px-1.5 py-0.5 rounded bg-surface text-muted">
-                    {tech}
-                  </span>))}
-              </div>
             </div>
 
             <div className="space-y-2">
@@ -56,20 +50,20 @@ export function HeroProductPreview() {
             <div className="flex items-start justify-between gap-3 mb-4">
               <div className="min-w-0">
                 <p className="text-table-header">Top Match</p>
-                <p className="text-h4 text-foreground truncate">{ahmadAli.name}</p>
-                <p className="text-caption truncate">{ahmadAli.role}</p>
+                <p className="text-h4 text-foreground truncate">Developer</p>
+                <p className="text-caption truncate">Role</p>
               </div>
               <div className="text-right shrink-0">
-                <p className="text-h3 text-teal">{ahmadAli.reliability}%</p>
+                <p className="text-h3 text-teal">—</p>
                 <p className="text-caption">Reliability</p>
               </div>
             </div>
 
             <div className="grid grid-cols-3 gap-2 mb-4">
               {[
-            { label: "Score", value: `${ahmadAli.averageScore}%` },
-            { label: "On-time", value: `${ahmadAli.onTimeCompletion}%` },
-            { label: "Projects", value: ahmadAli.realProjectsCompleted },
+            { label: "Score", value: "—" },
+            { label: "On-time", value: "—" },
+            { label: "Projects", value: "—" },
         ].map((m) => (<div key={m.label} className="rounded-md bg-surface px-2 py-2 text-center min-w-0">
                   <p className="text-caption truncate">{m.label}</p>
                   <p className="text-sm font-semibold text-foreground truncate">{m.value}</p>
@@ -83,9 +77,9 @@ export function HeroProductPreview() {
               </div>
               <div className="p-3 space-y-2">
                 {[
-            { event: "React Challenge — Master", score: 94 },
-            { event: "Customer Dashboard Project", score: 91 },
-            { event: "Company Evaluation", score: 96 },
+            { event: "Assessment", score: 0 },
+            { event: "Skill challenge", score: 0 },
+            { event: "Project review", score: 0 },
         ].map((item) => (<div key={item.event} className="flex items-center gap-3">
                     <div className="flex-1 min-w-0">
                       <p className="text-xs text-neutral-dark truncate">{item.event}</p>

@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { allDeveloperProjects, ahmadAli } from "@/lib/mock-data";
 import { assignmentDisplayStatus, developerListTab, getAssignmentForDeveloper } from "@/lib/assignments";
 import { Briefcase } from "lucide-react";
+import { api, useResource } from "@/lib/api";
+import { useState } from "react";
 const TABS = ["invitations", "active", "submitted", "completed", "not-completed"];
 function ProjectCard({ project }) {
     const assignment = getAssignmentForDeveloper(project, ahmadAli.id);
@@ -43,8 +45,10 @@ export default function DeveloperProjectsPage() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const tab = searchParams.get("tab") || "invitations";
+    const live = useResource('/engagements');
     return (<div className="min-w-0">
       <PageHeader title="Projects" description="Manage invitations, active work, and completed deliverables. Each assignment has its own work status."/>
+      <LiveEngagements data={live.data} reload={live.reload}/>
 
       <Tabs value={tab} onValueChange={(v) => router.push(`/developer/projects?tab=${v}`)}>
         <TabsList className="mb-0">
@@ -63,4 +67,22 @@ export default function DeveloperProjectsPage() {
         })}
       </Tabs>
     </div>);
+}
+
+function LiveEngagements({ data, reload }) {
+    const [summary, setSummary] = useState("");
+    const [error, setError] = useState("");
+    if (!data?.items?.length) return null;
+    async function accept(id) { setError(""); try { await api(`/engagements/${id}/accept`, { method: "POST", body: {} }); await reload(); } catch (err) { setError(err.message); } }
+    async function submit(id, milestoneId) { setError(""); try { await api(`/engagements/${id}/phases/${milestoneId}`, { method: "POST", body: { summary } }); setSummary(""); await reload(); } catch (err) { setError(err.message); } }
+    return <div className="mb-6 space-y-3">{error && <p className="text-sm text-red-700">{error}</p>}{data.items.map(item => <Card key={item.id}>
+      <p className="font-medium">{item.title}</p>
+      <p className="text-caption">{item.company_name} · {item.delivery_mode} · {item.status} · match {item.total_score}%</p>
+      {item.status === "invited" && <Button className="mt-3" size="sm" onClick={() => accept(item.id)}>Accept invitation</Button>}
+      {item.status === "accepted" && data.milestones.filter(phase => phase.project_id === item.project_id).map(phase => <div key={phase.id} className="mt-3">
+        <p className="text-sm">{phase.title}</p>
+        <textarea className="mt-2 w-full rounded-md border p-2 text-sm" rows={3} value={summary} onChange={event => setSummary(event.target.value)} placeholder="What you finished in this phase"/>
+        <Button className="mt-2" size="sm" variant="secondary" onClick={() => submit(item.id, phase.id)}>Submit phase</Button>
+      </div>)}
+    </Card>)}</div>;
 }

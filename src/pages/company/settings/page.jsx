@@ -39,7 +39,7 @@ export default function CompanySettingsPage() {
           <CardContent className="pt-6">
             <h2 className="text-h3 text-foreground mb-4">Billing contact</h2>
             <FormField label="Email">
-              <Input defaultValue="billing@techflow.example.com"/>
+              <Input type="email" placeholder="billing@company.com"/>
             </FormField>
             <Button variant="secondary">Save</Button>
           </CardContent>

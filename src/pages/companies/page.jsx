@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CtaSection } from "@/components/public/cta-section";
 import { PageHeader } from "@/components/public/page-header";
-import { ahmadAli, topMatches, matchReasons } from "@/lib/mock-data";
+import { topMatches } from "@/lib/mock-data";
 export const metadata = {
     title: "For Companies",
     description: "Hire developers based on verified performance, project delivery, and reliability scores.",
@@ -43,7 +43,6 @@ const benefits = [
     },
 ];
 export default function CompaniesPage() {
-    const reasons = matchReasons[ahmadAli.id] ?? [];
     return (<PublicLayout>
       <section className="py-16 lg:py-24 border-b border-border bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(20,184,166,0.06),transparent)]">
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
@@ -96,20 +95,16 @@ export default function CompaniesPage() {
                 Every match comes with transparent reasoning—verified skills, project history,
                 reliability scores, and availability aligned to your requirements.
               </p>
-              <ul className="mt-6 space-y-2">
-                {reasons.map((reason) => (<li key={reason} className="flex items-center gap-2 text-body-sm text-neutral-dark">
-                    <span className="h-1.5 w-1.5 rounded-full bg-teal shrink-0"/>
-                    {reason}
-                  </li>))}
-              </ul>
+              <p className="mt-6 text-body-sm text-muted">Match reasons are written from the developer’s real skills and project history.</p>
             </div>
 
             <div className="public-showcase-card">
               <div className="border-b border-border/80 bg-surface/50 px-5 py-4 flex items-center justify-between">
                 <span className="text-label text-foreground">Top Matches</span>
-                <Badge variant="teal" size="sm">94% best match</Badge>
+                <Badge variant="teal" size="sm">Live matches</Badge>
               </div>
               <div className="divide-y divide-border">
+                {!topMatches.length && <p className="px-5 py-6 text-body-sm text-muted">No sample matches. Real matches appear after a company posts a project.</p>}
                 {topMatches.map((dev, i) => (<div key={dev.id} className="px-5 py-4 flex items-center gap-4 transition-colors hover:bg-surface/60">
                     <div className="h-9 w-9 rounded-md bg-navy flex items-center justify-center shrink-0">
                       <span className="text-white text-xs font-semibold">

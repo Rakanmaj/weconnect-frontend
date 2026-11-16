@@ -12,16 +12,13 @@ import { companyDashboardChart, companyPayments, companyProjects, hiringPipeline
 import { getAcceptedAssignments } from "@/lib/assignments";
 import { useAuth } from '@/lib/auth';
 import { CompanyMemberDashboard } from '@/components/company/member-dashboard';
-const pendingActions = [
-    { id: 1, action: "Invite Top 4 matches", project: "Fleet Maintenance Dashboard", href: "/company/projects/proj-inv-1/matches" },
-    { id: 2, action: "Review 4 submissions", project: "Customer Support Dashboard", href: "/company/projects/proj-csm-dashboard/submissions" },
-    { id: 3, action: "Complete evaluations", project: "Customer Support Dashboard", href: "/company/projects/proj-csm-dashboard/evaluation" },
-];
+const pendingActions = [];
 export default function CompanyDashboardPage() {
     const { user } = useAuth();
     if (['Evaluator', 'Recruiter'].includes(user.companyAccess?.role)) return <CompanyMemberDashboard />;
     const activeProjects = companyProjects.filter((p) => p.state === "In Progress" || p.state === "Under Review");
     const pendingPayment = companyPayments.find((p) => p.status === "Pending");
+    const working = companyProjects[0] ? getAcceptedAssignments(companyProjects[0]) : [];
     return (<>
       <PageHeader title="Dashboard" description="Overview of projects, hiring, and payments." action={<Link href="/company/projects/new">
             <Button>
@@ -32,7 +29,7 @@ export default function CompanyDashboardPage() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
         <StatCard label="Active projects" value={activeProjects.length} icon={Briefcase} accent="primary"/>
-        <StatCard label="Developers working" value={getAcceptedAssignments(companyProjects[0]).length} icon={Users} accent="teal" change="Independent contributors"/>
+        <StatCard label="Developers working" value={working.length} icon={Users} accent="teal" change="Independent contributors"/>
         <StatCard label="Pipeline candidates" value={hiringPipeline.length} icon={Sparkles} accent="navy"/>
         <StatCard label="Pending payment" value={pendingPayment ? `$${pendingPayment.amount.toLocaleString()}` : "$0"} icon={CreditCard} accent="success"/>
       </div>
@@ -43,6 +40,7 @@ export default function CompanyDashboardPage() {
             <SectionHeader title="Active projects"/>
           </CardHeader>
           <CardContent className="space-y-3">
+            {!activeProjects.length && <p className="text-body-sm text-muted">No active projects yet.</p>}
             {activeProjects.map((project) => (<Link key={project.id} href={`/company/projects/${project.id}`} className="flex items-center justify-between rounded-[8px] border border-border p-4 hover:bg-surface/50 transition-colors">
                 <div className="min-w-0">
                   <p className="text-label text-navy truncate">{project.title}</p>
@@ -58,6 +56,7 @@ export default function CompanyDashboardPage() {
             <SectionHeader title="Pending actions"/>
           </CardHeader>
           <CardContent className="space-y-3">
+            {!pendingActions.length && <p className="text-body-sm text-muted">Nothing is waiting on you.</p>}
             {pendingActions.map((item) => (<Link key={item.id} href={item.href} className="flex gap-3 rounded-[8px] border border-border p-3 hover:bg-surface/50">
                 <AlertCircle className="h-4 w-4 text-amber-500 shrink-0 mt-0.5"/>
                 <div className="min-w-0">
@@ -72,12 +71,13 @@ export default function CompanyDashboardPage() {
       <div className="grid gap-6 lg:grid-cols-2 mb-8">
         <Card>
           <CardHeader>
-            <SectionHeader title="AI top matches" description="Best-fit developers for active projects" action={<Link href="/company/projects/proj-csm-dashboard/matches">
-                  <Button variant="ghost" size="sm">View all</Button>
+            <SectionHeader title="AI top matches" description="Best-fit developers for active projects" action={<Link href="/company/projects">
+                  <Button variant="ghost" size="sm">View projects</Button>
                 </Link>}/>
           </CardHeader>
           <CardContent className="space-y-3">
-            {getAcceptedAssignments(companyProjects[0]).map((a) => (<div key={a.id} className="flex items-center gap-3 rounded-[8px] border border-border p-3">
+            {!working.length && <p className="text-body-sm text-muted">Matches appear after you post a project.</p>}
+            {working.map((a) => (<div key={a.id} className="flex items-center gap-3 rounded-[8px] border border-border p-3">
                 <Avatar name={a.developer.name} size="sm"/>
                 <div className="min-w-0 flex-1">
                   <p className="text-label text-navy truncate">{a.developer.name}</p>
@@ -116,7 +116,7 @@ export default function CompanyDashboardPage() {
           <div className="grid gap-4 sm:grid-cols-3 mb-4">
             <div>
               <p className="text-caption">Total paid (YTD)</p>
-              <p className="text-h3 text-navy">$12,400</p>
+              <p className="text-h3 text-navy">$0</p>
             </div>
             <div>
               <p className="text-caption">Outstanding</p>
