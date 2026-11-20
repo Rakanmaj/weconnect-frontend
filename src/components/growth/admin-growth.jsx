@@ -18,6 +18,14 @@ const names={assessment:'Assessment',challenge:'Challenge',project:'Internal Pro
 const editHref=(kind,id)=>`${roots[kind]}/${id}${kind==='project'?'/edit':''}`;
 const selectClass='h-11 w-full rounded-lg border border-border bg-white px-3 text-sm';
 const blankQuestion=()=>({id:`q-${crypto.randomUUID().slice(0,8)}`,type:'mcq',prompt:'',points:10,options:['Option A','Option B'],correctAnswer:'Option A',starterCode:'',rubric:'',tests:[]});
+function bodyForSave(form) {
+  if (form.kind !== 'project') return form;
+  const requirements = form.requirements.trim();
+  const description = form.description.trim();
+  if (requirements.length >= 10) return form;
+  if (description.length >= 10) return { ...form, requirements: description };
+  return form;
+}
 function PathField({value,onChange}){return <fieldset className="mb-5"><legend className="text-label mb-3">Career paths</legend><div className="flex flex-wrap gap-4">{CAREER_PATHS.map(p=><label key={p} className="flex gap-2 items-center text-sm"><input type="checkbox" checked={value.includes(p)} onChange={e=>onChange(e.target.checked?[...value,p]:value.filter(x=>x!==p))}/>{p}</label>)}</div></fieldset>;}
 export function AdminContentList({kind}){
   const {data,error}=useResource(`/admin/growth/content?kind=${kind}`);
@@ -46,18 +54,23 @@ function ContentForm({kind,item,skills}){
   const field=(name)=>({value:form[name],onChange:e=>{setForm({...form,[name]:e.target.value});setMessage('');}});
   function updateQuestion(index,patch){setForm({...form,questions:form.questions.map((q,i)=>i===index?{...q,...patch}:q)});setMessage('');}
   async function save(e){e?.preventDefault();setBusy(true);setError('');setMessage('');try{
-    const {item:saved}=await api(current?`/admin/growth/content/${current.id}`:'/admin/growth/content',{method:current?'PUT':'POST',body:form});
+    const {item:saved}=await api(current?`/admin/growth/content/${current.id}`:'/admin/growth/content',{method:current?'PUT':'POST',body:bodyForSave(form)});
     if(!current){router.replace(editHref(kind,saved.id));return;}
     setCurrent(saved);setForm({...form,baseVersion:saved.version});setMessage(`Draft version ${saved.version} saved. Publish when ready. Existing attempts keep their original version.`);
   }catch(e){setError(e.message);}finally{setBusy(false);}}
-  async function publish(archive=false){setBusy(true);setError('');try{const {item:saved}=await api(`/admin/growth/content/${current.id}/publish`,{method:'POST',body:{version:current.version,archive}});setCurrent(saved);setMessage(archive?'Activity archived. Existing submissions remain available.':`Version ${saved.version} published and available to eligible developers.`);}catch(e){setError(e.message);}finally{setBusy(false);}}
+  async function publish(archive=false){setBusy(true);setError('');try{
+    const {item:draft}=await api(`/admin/growth/content/${current.id}`,{method:'PUT',body:bodyForSave({...form,baseVersion:current.version})});
+    setCurrent(draft);setForm({...form,requirements:draft.requirements,baseVersion:draft.version});
+    const {item:saved}=await api(`/admin/growth/content/${current.id}/publish`,{method:'POST',body:{version:draft.version,archive}});
+    setCurrent(saved);setMessage(archive?'Activity archived. Existing submissions remain available.':`Version ${saved.version} published and available to eligible developers.`);
+  }catch(e){setError(e.message);}finally{setBusy(false);}}
   return <div><PageHeader title={`${current?'Edit':'Create'} ${names[kind]}`} description={current?`Version ${current.version} · ${current.content_status}. Edits create a new draft version.`:'Create the activity and its question bank before publishing.'} breadcrumb={<Link href={roots[kind]} className="inline-flex gap-2 items-center text-primary"><ArrowLeft className="h-4 w-4"/> Back to {names[kind].toLowerCase()} list</Link>}/>
     <AuthError message={error}/><Notice message={message}/><form onSubmit={save} className="space-y-6"><fieldset disabled={busy} className="space-y-6">
       <Card><h2 className="text-h3 mb-5">Activity details</h2><div className="grid md:grid-cols-2 gap-x-6"><FormField label="Title" required><Input aria-label="Activity title" required maxLength={180} {...field('title')}/></FormField><FormField label="URL slug" helper="Lowercase words separated by hyphens. Fixed after creation." required><Input aria-label="Activity slug" required disabled={Boolean(current)} pattern="[a-z0-9]+(-[a-z0-9]+)*" {...field('slug')}/></FormField>
         {kind==='challenge'&&<><FormField label="Skill" required><select aria-label="Challenge skill" className={selectClass} value={form.skillId||''} disabled={Boolean(current)} onChange={e=>setForm({...form,skillId:e.target.value})}>{skills.map(s=><option key={s.id} value={s.id}>{s.name}</option>)}</select></FormField><FormField label="Path position" helper="Earlier published challenges must be completed first."><Input aria-label="Path position" type="number" min={1} max={1000} disabled={Boolean(current)} value={form.position} onChange={e=>setForm({...form,position:Number(e.target.value)})}/></FormField></>}
         {kind!=='project'&&<FormField label="Time limit in minutes"><Input aria-label="Time limit" type="number" min={5} max={240} value={form.durationMinutes} onChange={e=>setForm({...form,durationMinutes:Number(e.target.value)})}/></FormField>}
         <FormField label="Pass score (%)"><Input aria-label="Pass score" type="number" min={1} max={100} value={form.passScore} onChange={e=>setForm({...form,passScore:Number(e.target.value)})}/></FormField></div>
-        <PathField value={form.careerPaths} onChange={value=>setForm({...form,careerPaths:value})}/><FormField label="Description"><Textarea aria-label="Activity description" rows={3} maxLength={10000} {...field('description')}/></FormField><FormField label={kind==='project'?'Project requirements':'Instructions'} required={kind==='project'}><Textarea aria-label="Activity requirements" rows={5} maxLength={15000} {...field('requirements')}/></FormField>
+        <PathField value={form.careerPaths} onChange={value=>setForm({...form,careerPaths:value})}/><FormField label="Description" helper={kind==='project'?'For internal projects, a detailed description (10+ characters) can stand in for requirements if the requirements box is empty.' : undefined}><Textarea aria-label="Activity description" rows={3} maxLength={10000} {...field('description')}/></FormField><FormField label={kind==='project'?'Project requirements (rubric for developers)':'Instructions'} helper={kind==='project'?'What to build, how it is graded, and deliverables. At least 10 characters — or fill Description above instead.' : undefined} required={kind==='project'}><Textarea aria-label="Activity requirements" rows={5} maxLength={15000} {...field('requirements')}/></FormField>
       </Card>
       {kind!=='project'&&<Card><div className="flex flex-wrap justify-between items-center gap-4 mb-6"><h2 className="text-h3">Question bank</h2><Button type="button" variant="secondary" disabled={form.questions.length>=40} onClick={()=>setForm({...form,questions:[...form.questions,blankQuestion()]})}><Plus className="h-4 w-4"/> Add question</Button></div>
         <div className="space-y-6">{form.questions.map((q,index)=><section className="rounded-xl border border-border p-4 sm:p-5" key={q.id}>

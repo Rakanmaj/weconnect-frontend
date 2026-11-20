@@ -28,6 +28,11 @@ import {
   SkillCredentialCard,
   SkillsProfileHero,
   TrackPathHeader,
+  InternalProjectsHero,
+  InternalProjectsLockedBanner,
+  InternalProjectCard,
+  InternalProjectBrief,
+  InternalProjectSubmitFooter,
   placementPrepActive,
   useEnrichedSections,
 } from './learning-experience';
@@ -44,11 +49,14 @@ export function GrowthGate({data}) {
 export function GrowthSummary() {
   const {data,error}=useResource('/growth/overview');
   if(!data) return <LoadingProfile error={error}/>;
-  return <Card><h2 className="text-h3 mb-4">Your learning progress</h2><GrowthGate data={data}/><div className="grid sm:grid-cols-3 gap-4 mb-5">
-    <div><p className="text-caption">Career path</p><p className="font-medium">{data.careerPath||'Not selected'}</p></div>
-    <div><p className="text-caption">Assessment level</p><p className="font-medium">{data.level?`Level ${data.level}`:'Not assessed'}</p></div>
-    <div><p className="text-caption">Challenges completed</p><p className="font-medium">{data.completions.find(c=>c.kind==='challenge')?.count||0}</p></div>
-  </div><div className="flex flex-wrap gap-3"><Button asChild><Link href="/developer/assessment">Open assessment <ArrowRight className="h-4 w-4"/></Link></Button><Button variant="secondary" asChild><Link href="/developer/skills">Skill progress</Link></Button><Button variant="secondary" asChild><Link href="/developer/internal-projects">Internal projects</Link></Button></div></Card>;
+  const challenges = data.completions.find(c => c.kind === 'challenge')?.count || 0;
+  const projects = data.completions.find(c => c.kind === 'project')?.count || 0;
+  return <Card className="overflow-hidden border-border/80"><h2 className="text-h3 mb-4">Your learning progress</h2><GrowthGate data={data}/><div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-5">
+    <div className="rounded-xl border border-border bg-surface/40 px-3 py-3"><p className="text-caption">Career path</p><p className="font-medium text-sm">{data.careerPath||'Not selected'}</p></div>
+    <div className="rounded-xl border border-border bg-surface/40 px-3 py-3"><p className="text-caption">Placement</p><p className="font-medium text-sm">{data.level?`Level ${data.level}`:data.assessmentPassed?'Passed':'Not assessed'}</p></div>
+    <div className="rounded-xl border border-border bg-surface/40 px-3 py-3"><p className="text-caption">Milestones</p><p className="font-medium text-sm">{challenges}</p></div>
+    <div className="rounded-xl border border-border bg-surface/40 px-3 py-3"><p className="text-caption">Internal projects</p><p className="font-medium text-sm">{projects}</p></div>
+  </div><div className="flex flex-wrap gap-3"><Button asChild><Link href="/developer/challenges">Learning lab <ArrowRight className="h-4 w-4"/></Link></Button><Button variant="secondary" asChild><Link href="/developer/assessment">Placement</Link></Button><Button variant="secondary" asChild><Link href="/developer/internal-projects">Internal projects</Link></Button></div></Card>;
 }
 function attemptHref(attempt) {
   if(attempt.kind==='assessment')return `/developer/assessment?attempt=${attempt.id}`;
@@ -78,6 +86,54 @@ function StartAssessmentButton({ready, busy, previous, onStart, canRetake = true
   const remediationBlocked = !canRetake;
   const label = previous?.status==='active' ? 'Resume assessment' : previous?.status==='pending-review' ? 'View submitted work' : remediationBlocked ? 'Finish Learning lab prep first' : locked ? `Available in ${formatCountdown(remaining)}` : previous?.status === 'failed' ? 'Retake placement' : 'Start assessment';
   return <Button disabled={!ready || locked || remediationBlocked} className={locked ? 'disabled:opacity-100' : undefined} loading={busy} onClick={onStart} aria-label={locked ? `Start assessment locked. Available in ${formatCountdown(remaining)}` : label}>{(locked || remediationBlocked) && <LockKeyhole className="h-4 w-4"/>}{label}</Button>;
+}
+export function InternalProjectsPage() {
+  const catalog = useResource('/growth/catalog?kind=project');
+  const overview = useResource('/growth/overview');
+  if (!catalog.data || !overview.data) return <LoadingProfile error={catalog.error || overview.error}/>;
+  const completedCount = overview.data.completions.find(c => c.kind === 'project')?.count || 0;
+  const unlocked = overview.data.approved && overview.data.assessmentPassed;
+  const history = overview.data.history.filter(a => a.kind === 'project');
+  return (
+    <div className="mx-auto max-w-5xl">
+      <PageHeader
+        title="Internal projects"
+        description="Independent delivery on WeConnect — submit evidence and earn reviewed completions."
+        action={
+          <Button variant="secondary" asChild>
+            <Link href="/developer/challenges">Learning lab</Link>
+          </Button>
+        }
+      />
+      <GrowthGate data={overview.data}/>
+      <InternalProjectsHero overview={overview.data} catalogCount={catalog.data.items.length} completedCount={completedCount}/>
+      {overview.data.careerPath && !overview.data.assessmentPassed && <InternalProjectsLockedBanner/>}
+      {!catalog.data.items.length && (
+        <Card>No internal projects are published for your career path yet.</Card>
+      )}
+      {!!catalog.data.items.length && (
+        <section>
+          <h2 className="text-h3 mb-1">{unlocked ? 'Open projects' : 'Preview (unlock after placement)'}</h2>
+          <p className="text-caption mb-6">Each card links to the full brief and submission workspace.</p>
+          <div className="grid gap-6 lg:grid-cols-2">
+            {catalog.data.items.map(item => {
+              const previous = overview.data.history.find(a => a.activity_id === item.id);
+              return (
+                <InternalProjectCard
+                  key={item.id}
+                  item={item}
+                  previous={previous}
+                  statusLabels={labels}
+                  href={`/developer/internal-projects/${item.id}`}
+                />
+              );
+            })}
+          </div>
+        </section>
+      )}
+      <PlacementHistoryList items={history} statusLabels={labels} hrefFor={attemptHref}/>
+    </div>
+  );
 }
 export function ActivityCatalog({kind,title}) {
   const catalog=useResource(`/growth/catalog?kind=${kind}`), overview=useResource('/growth/overview');
@@ -385,7 +441,25 @@ function ProjectIntro({id}){
   if(!item.data||!overview.data)return <LoadingProfile error={item.error||overview.error}/>;
   const p=item.data.item;const previous=overview.data.history.find(a=>a.activity_id===p.id);
   async function join(){setBusy(true);try{const {attempt}=await api(`/growth/activities/${id}/start`,{method:'POST',body:{}});router.push(`/developer/internal-projects/${p.id}?attempt=${attempt.id}`);}catch(e){setError(e.message);}finally{setBusy(false);}}
-  return <div className="max-w-4xl mx-auto"><PageHeader title={p.title} breadcrumb={<Link href="/developer/internal-projects" className="inline-flex gap-2 items-center text-primary"><ArrowLeft className="h-4 w-4"/> Internal projects</Link>}/><AuthError message={error}/><GrowthGate data={overview.data}/><Card><h2 className="text-h3 mb-4">Project brief</h2><p className="text-muted mb-5">{p.description}</p><p className="whitespace-pre-wrap mb-6">{p.requirements}</p><p className="text-caption mb-5">Pass score {p.pass_score}% · Submit a summary and a repository, demo link or evidence file. No submission is marked completed until reviewed.</p><div className="flex flex-wrap gap-3"><Button disabled={!overview.data.approved||!overview.data.assessmentPassed} loading={busy} onClick={join}>{previous?.status==='active'?'Open workspace':previous?.status==='pending-review'?'View submission':'Join project'}</Button>{previous&&<Button asChild variant="secondary"><Link href={`/developer/internal-projects/${p.id}?attempt=${previous.id}`}>View latest result</Link></Button>}</div></Card></div>;
+  const joinLabel = previous?.status === 'active' ? 'Open workspace' : previous?.status === 'pending-review' ? 'View submission' : 'Start project';
+  return (
+    <div className="mx-auto max-w-5xl">
+      <PageHeader title={p.title} breadcrumb={<Link href="/developer/internal-projects" className="inline-flex gap-2 items-center text-primary"><ArrowLeft className="h-4 w-4"/> Internal projects</Link>}/>
+      <AuthError message={error}/>
+      <GrowthGate data={overview.data}/>
+      {!overview.data.assessmentPassed && overview.data.careerPath && <InternalProjectsLockedBanner/>}
+      <InternalProjectBrief title={p.title} description={p.description} requirements={p.requirements} passScore={p.pass_score}>
+        <article className="public-card flex flex-wrap gap-3 p-5 sm:p-6">
+          <Button disabled={!overview.data.approved || !overview.data.assessmentPassed} loading={busy} onClick={join}>{joinLabel} <ArrowRight className="h-4 w-4"/></Button>
+          {previous && (
+            <Button asChild variant="secondary">
+              <Link href={`/developer/internal-projects/${p.id}?attempt=${previous.id}`}>View latest result</Link>
+            </Button>
+          )}
+        </article>
+      </InternalProjectBrief>
+    </div>
+  );
 }
 
 export function AttemptWorkspace({id}){
@@ -400,7 +474,7 @@ export function AttemptWorkspace({id}){
   },[id,attempt?.status,attempt?.kind]);
   if(!resource.data)return <div><LoadingProfile error={resource.error}/>{resource.error&&<Button variant="secondary" onClick={reloadAttempt}>Retry loading saved attempt</Button>}</div>;
   const editor=<AttemptEditor key={`${id}-${resource.data.attempt.status}`} attempt={resource.data.attempt} refresh={resource.reload} saveRef={saveRef} serverError={resource.error}/>;
-  if(resource.data.attempt.kind==='project')return <div data-count-up-ignore>{editor}</div>;
+  if(resource.data.attempt.kind==='project')return <div className="mx-auto max-w-5xl" data-count-up-ignore>{editor}</div>;
   return <div className={resource.data.attempt.kind==='challenge'?'mx-auto max-w-5xl':undefined} data-count-up-ignore><QuestionPrivacy key={id} attempt={resource.data.attempt} beforeReport={()=>saveRef.current()} onStopped={resource.reload}>{editor}</QuestionPrivacy></div>;
 }
 function AttemptEditor({attempt,refresh,saveRef,serverError}){
@@ -446,7 +520,25 @@ function AttemptEditor({attempt,refresh,saveRef,serverError}){
     {attempt.security_stopped_at&&<Card className="mb-6 border-red-200 bg-red-50"><h2 className="text-h3 text-red-800">Exam stopped for review</h2><p className="text-sm mt-3">{attempt.security_stop_reason}</p><p className="text-sm mt-2">Your saved answers are locked. An administrator must review the recorded events before a final result is published.</p></Card>}
     {!active&&challenge&&<Card className="mb-6"><h2 className="text-h3">{labels[attempt.status]}</h2><p className="mt-2 text-sm text-muted">{attempt.score!==null?`${attempt.score}% · ${attempt.score>=attempt.pass_score?'You passed this milestone.':`You need ${attempt.pass_score}% to unlock the next challenge.`}`:''}</p>{(attempt.question_results||[]).length>0&&<p className="mt-3 text-sm">Use the question list below to review each answer.</p>}{attempt.status==='failed'&&<p className="mt-2 text-sm text-muted">Start again from Challenges for a different set of 10 questions.</p>}<div className="mt-5"><Button asChild><Link href={back}>Back to challenges</Link></Button></div></Card>}
     {!active&&!challenge&&<Card className="mb-6"><div className="flex flex-wrap items-center gap-4 mb-4"><Trophy className="h-8 w-8 text-teal"/><div><h2 className="text-h3">{labels[attempt.status]}</h2><p>{attempt.score!==null?`${attempt.score}% · Pass score ${attempt.pass_score}%`:'Your saved submission is waiting for administrator review.'}</p>{attempt.level&&<p className="text-sm">Initial assessment level: {attempt.level}</p>}</div></div>{attempt.expired&&<p className="text-sm mb-3">Time expired. Your last saved answers were submitted automatically.</p>}<p className="mb-4 text-sm">{(attempt.question_results||[]).length?'Open each question to see your answer and why it scored that way.':attempt.feedback||(attempt.status==='pending-review'?'An administrator reviews stopped exams and project submissions before a score is published.':'Your result is saved.')}</p><div className="flex flex-wrap gap-3">{attempt.status==='pending-review'&&<Button variant="secondary" onClick={refresh}>Refresh result</Button>}<Button asChild><Link href={back}>Continue <ArrowRight className="h-4 w-4"/></Link></Button><Button variant="secondary" asChild><Link href="/developer/level">View history</Link></Button></div></Card>}
-    {attempt.kind==='project'?<div className="grid lg:grid-cols-3 gap-6"><Card className="lg:col-span-2"><h2 className="text-h3 mb-4">Requirements</h2><p className="whitespace-pre-wrap mb-6">{attempt.requirements}</p><FormField label="Repository URL"><Input aria-label="Repository URL" type="url" disabled={!active||busy} value={project.repositoryUrl} onChange={e=>editProject({repositoryUrl:e.target.value})}/></FormField><FormField label="Demo URL"><Input aria-label="Demo URL" type="url" disabled={!active||busy} value={project.demoUrl} onChange={e=>editProject({demoUrl:e.target.value})}/></FormField><FormField label="Submission summary" required><Textarea aria-label="Submission summary" rows={7} disabled={!active||busy} value={project.summary} onChange={e=>editProject({summary:e.target.value})}/></FormField></Card><Card><h2 className="text-h3 mb-3">Project evidence</h2><p className="text-caption mb-4">PDF, PNG or JPEG · Up to 10 MB each · Five files and 25 MB total. Use a repository link for code.</p>{attempt.files.map(f=><div className="flex items-center gap-2 border-b py-3" key={f.id}><a className="flex-1 break-all text-primary underline text-sm" href={`/api/growth-files/${f.id}`}>{f.original_name}</a>{active&&<Button disabled={busy} variant="ghost" size="icon" aria-label={`Remove ${f.original_name}`} onClick={()=>removeFile(f.id)}><Trash2 className="h-4 w-4"/></Button>}</div>)}{active&&<label className="mt-4 flex items-center gap-2 text-sm font-medium text-primary cursor-pointer"><Upload className="h-4 w-4"/> Upload evidence<input aria-label="Upload project evidence" disabled={busy} type="file" accept="application/pdf,image/png,image/jpeg" className="mt-2 block w-full text-xs" onChange={upload}/></label>}</Card></div>:challenge?<div className="space-y-4"><ProgressBar value={answered} max={attempt.questions.length||1}/><nav aria-label="Challenge questions" className="flex flex-wrap gap-2">{attempt.questions.map((question,i)=><button type="button" key={question.id} onClick={()=>{setIndex(i);setCheck(null);}} className={`h-9 min-w-[2.25rem] rounded-md border px-2 text-sm font-medium ${i===index?'border-primary bg-primary text-white':'border-border bg-white'} ${answers[question.id]?.answer?'ring-1 ring-teal/40':''}`}>{i+1}</button>)}</nav>
+    {attempt.kind==='project'?<div className="space-y-6">
+      <article className="public-card p-5 sm:p-6 lg:col-span-2">
+        <h2 className="text-h3 mb-3">Requirements</h2>
+        <p className="whitespace-pre-wrap mb-6 rounded-xl border border-border bg-surface/40 p-4 text-sm">{attempt.requirements}</p>
+        <div className="grid gap-5 sm:grid-cols-2">
+          <FormField label="Repository URL"><Input aria-label="Repository URL" type="url" disabled={!active||busy} value={project.repositoryUrl} onChange={e=>editProject({repositoryUrl:e.target.value})}/></FormField>
+          <FormField label="Demo URL"><Input aria-label="Demo URL" type="url" disabled={!active||busy} value={project.demoUrl} onChange={e=>editProject({demoUrl:e.target.value})}/></FormField>
+        </div>
+        <FormField label="Submission summary" required className="mt-5"><Textarea aria-label="Submission summary" rows={7} disabled={!active||busy} value={project.summary} onChange={e=>editProject({summary:e.target.value})} placeholder="What you built, how to run it, and how it meets the brief."/></FormField>
+      </article>
+      <article className="public-card p-5 sm:p-6">
+        <h2 className="text-h3 mb-3">Project evidence</h2>
+        <p className="text-caption mb-4">PDF, PNG or JPEG · Up to 10 MB each · Five files and 25 MB total. Use a repository link for code.</p>
+        <ul className="divide-y divide-border">
+          {attempt.files.map(f=><li className="flex items-center gap-2 py-3" key={f.id}><a className="flex-1 break-all text-primary underline text-sm" href={`/api/growth-files/${f.id}`}>{f.original_name}</a>{active&&<Button disabled={busy} variant="ghost" size="icon" aria-label={`Remove ${f.original_name}`} onClick={()=>removeFile(f.id)}><Trash2 className="h-4 w-4"/></Button>}</li>)}
+        </ul>
+        {active&&<label className="mt-4 flex cursor-pointer flex-col gap-2 rounded-xl border border-dashed border-primary/30 bg-blue-50/50 p-4 text-sm font-medium text-primary"><span className="inline-flex items-center gap-2"><Upload className="h-4 w-4"/> Upload evidence</span><input aria-label="Upload project evidence" disabled={busy} type="file" accept="application/pdf,image/png,image/jpeg" className="text-xs" onChange={upload}/></label>}
+      </article>
+    </div>:challenge?<div className="space-y-4"><ProgressBar value={answered} max={attempt.questions.length||1}/><nav aria-label="Challenge questions" className="flex flex-wrap gap-2">{attempt.questions.map((question,i)=><button type="button" key={question.id} onClick={()=>{setIndex(i);setCheck(null);}} className={`h-9 min-w-[2.25rem] rounded-md border px-2 text-sm font-medium ${i===index?'border-primary bg-primary text-white':'border-border bg-white'} ${answers[question.id]?.answer?'ring-1 ring-teal/40':''}`}>{i+1}</button>)}</nav>
       {q&&<Card><div className="mb-4 flex items-baseline justify-between gap-3"><h2 className="text-lg font-semibold">Question {index+1}</h2><span className="text-caption">{q.points} pts</span></div><p className="whitespace-pre-wrap mb-6">{q.prompt}</p>
         <fieldset disabled={!active||busy} className="space-y-2"><legend className="sr-only">Choose your answer</legend>{q.options.map((option,i)=><label className={`flex items-start gap-3 rounded-lg border p-3 cursor-pointer ${answers[q.id]?.answer===option?'border-primary bg-blue-50':'border-border'}`} key={i}><input className="mt-1" type="radio" name={q.id} checked={answers[q.id]?.answer===option} onChange={()=>editAnswer(q.id,{answer:option})}/><span className="break-words text-sm">{option}</span></label>)}</fieldset>
         {!active&&(()=>{const result=(attempt.question_results||[]).find(item=>item.id===q.id);if(!result)return null;const correct=result.percent===100;return <div className={`mt-5 rounded-lg border p-4 text-sm ${correct?'border-teal/40 bg-teal/5':result.percent>0?'border-amber-200 bg-amber-50':'border-red-200 bg-red-50'}`}><p className="font-medium">{correct?'Correct':'Not correct'} · {result.earned} / {result.points} points</p>{result.note&&<p className="mt-2 whitespace-pre-wrap text-muted">{result.note}</p>}</div>;})()}
@@ -460,7 +552,7 @@ function AttemptEditor({attempt,refresh,saveRef,serverError}){
         <div className="flex flex-wrap justify-between gap-3 mt-6"><Button variant="secondary" disabled={!index} onClick={()=>setIndex(index-1)}><ArrowLeft className="h-4 w-4"/> Previous</Button>{active&&!challenge&&<Button variant="ghost" onClick={()=>editAnswer(q.id,{flagged:!answers[q.id]?.flagged})}><Flag className="h-4 w-4"/>{answers[q.id]?.flagged?'Unflag':'Flag for review'}</Button>}<Button variant="secondary" disabled={index>=attempt.questions.length-1} onClick={()=>setIndex(index+1)}>Next <ArrowRight className="h-4 w-4"/></Button></div>
       </Card>}</div>}
     {active&&challenge&&<div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"><p className="text-caption">Answers save automatically.</p><Button className="sm:min-w-[180px]" loading={busy} onClick={()=>submit()}>Submit challenge <ArrowRight className="h-4 w-4"/></Button></div>}
-    {active&&!challenge&&<Card className="mt-6"><p className="text-sm text-muted mb-4">{attempt.kind==='project'?'Submit your own evidence for administrator review.':'Answers autosave while you work. The server enforces the deadline even if you close this tab.'} Submission locks your answers.</p><div className="flex flex-wrap gap-3"><Button variant="secondary" loading={busy} onClick={()=>save().catch(e=>setError(e.message))}>Save progress</Button><Button loading={busy} onClick={()=>submit()}>Submit {attempt.kind==='project'?'project':'assessment'} <ArrowRight className="h-4 w-4"/></Button></div></Card>}
+    {active&&!challenge&&(attempt.kind==='project'?<InternalProjectSubmitFooter active={active} busy={busy} onSave={()=>save().catch(e=>setError(e.message))} onSubmit={()=>submit()}/>:<Card className="mt-6"><p className="text-sm text-muted mb-4">Answers autosave while you work. The server enforces the deadline even if you close this tab. Submission locks your answers.</p><div className="flex flex-wrap gap-3"><Button variant="secondary" loading={busy} onClick={()=>save().catch(e=>setError(e.message))}>Save progress</Button><Button loading={busy} onClick={()=>submit()}>Submit assessment <ArrowRight className="h-4 w-4"/></Button></div></Card>)}
   </div>;
 }
 function History({items}){return <div className="mt-8"><h2 className="text-h3 mb-4">Attempt history</h2><div className="space-y-3">{!items.length&&<Card>No attempts yet. Start a published activity above.</Card>}{items.map(a=><Card key={a.id}><div className="flex flex-col sm:flex-row gap-3 sm:items-center justify-between"><div><p className="font-medium">{a.title}</p><p className="text-caption">{new Date(a.started_at).toLocaleString()} · {labels[a.status]}{a.score!==null?` · ${a.score}%`:''}</p></div><Button variant="secondary" size="sm" asChild><Link href={attemptHref(a)}>Open attempt</Link></Button></div></Card>)}</div></div>;}

@@ -4,10 +4,12 @@ import {
   ArrowRight,
   BookOpen,
   Braces,
+  Briefcase,
   CheckCircle2,
   ClipboardCheck,
   Clock3,
   Database,
+  FileText,
   Layers,
   Lock,
   Monitor,
@@ -16,6 +18,7 @@ import {
   Sparkles,
   Target,
   Trophy,
+  Upload,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -633,5 +636,158 @@ export function PlacementUnlockBanner() {
         </Link>
       </Button>
     </div>
+  );
+}
+
+export function InternalProjectsHero({ overview, catalogCount, completedCount }) {
+  return (
+    <section className="public-card public-card--dark relative mb-10 overflow-hidden p-6 sm:p-8">
+      <div className="pointer-events-none absolute -right-16 top-0 h-52 w-52 rounded-full bg-primary/25 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-20 left-0 h-44 w-44 rounded-full bg-teal/20 blur-3xl" />
+      <div className="relative grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
+        <div>
+          <Badge variant="teal" size="sm" className="mb-3 w-fit">
+            <Briefcase className="h-3 w-3" />
+            Step 3 · Platform delivery
+          </Badge>
+          <h2 className="text-2xl font-semibold text-white sm:text-3xl">Internal projects build your delivery record</h2>
+          <p className="mt-3 max-w-xl text-sm text-white/75">
+            Ship independent work on WeConnect, submit evidence, and receive administrator review. Completion counts toward verified milestone progress on your dashboard.
+          </p>
+          <ol className="mt-5 flex flex-col gap-2 text-sm text-white/70 sm:flex-row sm:gap-6">
+            <li className="flex items-center gap-2">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-xs font-bold">1</span>
+              Read the brief
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-xs font-bold">2</span>
+              Submit repo / demo / summary
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-xs font-bold">3</span>
+              Admin review → completion
+            </li>
+          </ol>
+        </div>
+        <div className="grid grid-cols-3 gap-3 sm:gap-4">
+          <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-3 text-center sm:px-4">
+            <p className="text-[10px] uppercase tracking-wide text-white/50">Available</p>
+            <p className="mt-1 text-lg font-semibold text-white">{catalogCount}</p>
+          </div>
+          <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-3 text-center sm:px-4">
+            <p className="text-[10px] uppercase tracking-wide text-white/50">Completed</p>
+            <p className="mt-1 text-lg font-semibold text-white">{completedCount}</p>
+          </div>
+          <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-3 text-center sm:px-4">
+            <p className="text-[10px] uppercase tracking-wide text-white/50">Path</p>
+            <p className="mt-1 truncate text-sm font-semibold text-white">{overview.careerPath || '—'}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function InternalProjectsLockedBanner() {
+  return (
+    <section className="relative mb-10 overflow-hidden rounded-[22px] border border-amber-200/60 bg-gradient-to-br from-[#1a1206] via-[#221a0d] to-[#0f1729] p-6 text-white shadow-xl sm:p-8">
+      <div className="pointer-events-none absolute -right-10 top-0 h-48 w-48 rounded-full bg-amber-400/15 blur-3xl" />
+      <div className="relative flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-amber-300">
+            <Lock className="h-4 w-4" />
+            Locked until placement passes
+          </div>
+          <h2 className="mt-2 text-xl font-semibold sm:text-2xl">Pass placement to open internal projects</h2>
+          <p className="mt-2 max-w-xl text-sm text-white/70">
+            Finish placement (or the Learning lab prep path), then return here to practice real delivery before company projects.
+          </p>
+        </div>
+        <Button size="lg" className="h-12 w-full bg-white text-navy hover:bg-white/90 sm:w-auto" asChild>
+          <Link href="/developer/assessment">
+            Open placement <ArrowRight className="h-4 w-4" />
+          </Link>
+        </Button>
+      </div>
+    </section>
+  );
+}
+
+export function InternalProjectCard({ item, previous, statusLabels, href }) {
+  const status = previous ? statusLabels[previous.status] : null;
+  return (
+    <article className="public-card group relative flex h-full flex-col overflow-hidden p-5 sm:p-6">
+      <div className="flex items-start justify-between gap-3">
+        <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-teal text-white shadow-lg shadow-primary/15">
+          <Briefcase className="h-6 w-6" />
+        </span>
+        {status && (
+          <Badge variant={previous.status === 'passed' ? 'success' : previous.status === 'active' ? 'primary' : 'warning'} size="sm">
+            {status}
+            {previous.score !== null ? ` · ${previous.score}%` : ''}
+          </Badge>
+        )}
+      </div>
+      <h3 className="mt-4 text-h3 break-words">{item.title}</h3>
+      <p className="mt-2 text-sm text-muted line-clamp-2">{item.description || 'Independent WeConnect project'}</p>
+      <p className="mt-3 whitespace-pre-wrap text-sm text-navy/80 line-clamp-3">{item.requirements}</p>
+      <p className="mt-4 text-caption">Pass score {item.pass_score}% · Reviewed submission</p>
+      <div className="mt-auto pt-5">
+        <Button className="w-full sm:w-auto" asChild>
+          <Link href={href}>
+            {previous?.status === 'active' ? 'Open workspace' : 'View project'} <ArrowRight className="h-4 w-4" />
+          </Link>
+        </Button>
+      </div>
+    </article>
+  );
+}
+
+export function InternalProjectBrief({ title, description, requirements, passScore, children }) {
+  return (
+    <div className="space-y-6">
+      <section className="relative overflow-hidden rounded-[22px] border border-primary/15 bg-gradient-to-br from-[#0d1b3d] via-[#102347] to-[#0a1732] p-6 text-white shadow-xl sm:p-8">
+        <div className="pointer-events-none absolute right-0 top-0 h-40 w-40 rounded-full bg-teal/20 blur-3xl" />
+        <div className="relative">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-teal">
+            <FileText className="h-4 w-4" />
+            Project brief
+          </div>
+          <h2 className="mt-2 text-2xl font-semibold sm:text-3xl">{title}</h2>
+          {description && <p className="mt-3 max-w-2xl text-sm text-white/75">{description}</p>}
+          <p className="mt-4 text-caption text-white/60">Pass score {passScore}% · Administrator review required</p>
+        </div>
+      </section>
+      <article className="public-card p-5 sm:p-6">
+        <h3 className="text-h3 mb-3">Requirements</h3>
+        <p className="whitespace-pre-wrap text-sm text-navy/90">{requirements}</p>
+      </article>
+      {children}
+    </div>
+  );
+}
+
+export function InternalProjectSubmitFooter({ active, busy, onSave, onSubmit }) {
+  if (!active) return null;
+  return (
+    <section className="mt-8 rounded-2xl border border-border bg-surface/50 p-5 sm:p-6">
+      <div className="flex items-start gap-3">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+          <Upload className="h-5 w-5" />
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-medium text-navy">Ready to submit?</p>
+          <p className="mt-1 text-caption">Progress autosaves. Submit when your summary, links, and evidence files are complete. Submission locks until review.</p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <Button variant="secondary" loading={busy} onClick={onSave}>
+              Save progress
+            </Button>
+            <Button loading={busy} onClick={onSubmit}>
+              Submit project <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
